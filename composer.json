@@ -1,5 +1,5 @@
 {
-    "name": "respinar/contao-podcast-bundle",
+    "name": "respinar/contao-podcast",
     "description": "Contao Podcast Bundle",
     "keywords": ["contao", "bundle", "podcast"],
     "type": "contao-bundle",
@@ -13,8 +13,8 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/respinar/contao-podcast-bundle/issues",
-        "source": "https://github.com/respinar/contao-podcast-bundle"
+        "issues": "https://github.com/respinar/contao-podcast/issues",
+        "source": "https://github.com/respinar/contao-podcast"
     },
     "require": {
         "php": "^8.1",
