@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @license MIT
  */
 
-namespace Respinar\ContaoPodcastBundle\ContaoManager;
+namespace Respinar\PodcastBundle\ContaoManager;
 
 use Contao\ManagerPlugin\Bundle\BundlePluginInterface;
 use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
@@ -20,7 +20,7 @@ use Symfony\Component\Config\Loader\LoaderResolverInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\RouteCollection;
 use Contao\CoreBundle\ContaoCoreBundle;
-use Respinar\ContaoPodcastBundle\RespinarPodcastBundle;
+use Respinar\PodcastBundle\RespinarPodcastBundle;
 
 class Plugin implements BundlePluginInterface, RoutingPluginInterface
 {
