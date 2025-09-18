@@ -6,4 +6,5 @@ services:
 
     Respinar\PodcastBundle\:
         resource: ../src/
+        exclude: ../src/ContaoManager/
 
