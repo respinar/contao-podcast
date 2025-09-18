@@ -8,8 +8,8 @@
  * @license MIT
  */
 
-use Respinar\ContaoPodcastBundle\Model\ChannelModel;
-use Respinar\ContaoPodcastBundle\Model\EpisodeModel;
+use Respinar\PodcastBundle\Model\ChannelModel;
+use Respinar\PodcastBundle\Model\EpisodeModel;
 
 /**
  * Backend modules
