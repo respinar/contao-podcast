@@ -25,7 +25,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Respinar\\ContaoPodcastBundle\\": "src/"
+            "Respinar\\PodcastBundle\\": "src/"
         }
     },
     "extra": {
