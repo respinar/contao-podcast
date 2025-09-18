@@ -29,7 +29,7 @@
         }
     },
     "extra": {
-        "contao-manager-plugin": "Respinar\\ContaoPodcastBundle\\ContaoManager\\Plugin"
+        "contao-manager-plugin": "Respinar\\PodcastBundle\\ContaoManager\\Plugin"
     },
     "scripts": {
         "cs-fixer": "@php tools/ecs/vendor/bin/ecs check config/ contao/ src/ templates/ tests/ --config tools/ecs/config.php --fix --ansi",
