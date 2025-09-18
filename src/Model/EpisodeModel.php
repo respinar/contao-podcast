@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @license MIT
  */
 
-namespace Respinar\ContaoPodcastBundle\Model;
+namespace Respinar\PodcastBundle\Model;
 
 use Contao\Date;
 use Contao\Model;
