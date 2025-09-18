@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @license MIT
  */
 
-namespace Respinar\ContaoPodcastBundle;
+namespace Respinar\PodcastBundle\Classes;
 
 use Contao\ContentModel;
 use Contao\System;
@@ -26,8 +26,8 @@ use Contao\Date;
 use Contao\File;
 use Contao\Model\Collection;
 use Contao\ModuleModel;
-use Respinar\ContaoPodcastBundle\Model\ChannelModel;
-use Respinar\ContaoPodcastBundle\Model\EpisodeModel;
+use Respinar\PodcastBundle\Model\ChannelModel;
+use Respinar\PodcastBundle\Model\EpisodeModel;
 
 class Podcast {
 
