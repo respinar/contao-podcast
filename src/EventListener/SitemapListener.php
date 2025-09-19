@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @license MIT
  */
 
-namespace Respinar\ContaoPodcastBundle\EventListener;
+namespace Respinar\PodcastBundle\EventListener;
 
 use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Event\SitemapEvent;
@@ -19,8 +19,8 @@ use Terminal42\ServiceAnnotationBundle\Annotation\ServiceTag;
 use Contao\PageModel;
 use Contao\Database;
 use Contao\CoreBundle\Framework\ContaoFramework;
-use Respinar\ContaoPodcastBundle\Model\ChannelModel;
-use Respinar\ContaoPodcastBundle\Model\EpisodeModel;
+use Respinar\PodcastBundle\Model\ChannelModel;
+use Respinar\PodcastBundle\Model\EpisodeModel;
 
 /**
  * @ServiceTag("kernel.event_listener", event=ContaoCoreEvents::SITEMAP)
