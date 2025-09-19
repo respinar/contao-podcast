@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @license MIT
  */
 
-namespace Respinar\ContaoPodcastBundle\Controller\FrontendModule;
+namespace Respinar\PodcastBundle\Controller\FrontendModule;
 
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
@@ -23,12 +23,12 @@ use Contao\Config;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-use Respinar\ContaoPodcastBundle\Podcast;
+use Respinar\PodcastBundle\Classes\Podcast;
 
-use Respinar\ContaoPodcastBundle\Model\EpisodeModel;
-use Respinar\ContaoPodcastBundle\Model\ChannelModel;
+use Respinar\PodcastBundle\Model\EpisodeModel;
+use Respinar\PodcastBundle\Model\ChannelModel;
 
-use Respinar\ContaoPodcastBundle;
+use Respinar\PodcastBundle;
 
 #[AsFrontendModule(category: 'podcasts', template: 'mod_podcast_channel')]
 class PodcastChannelController extends AbstractFrontendModuleController
