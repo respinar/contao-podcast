@@ -10,15 +10,15 @@ declare(strict_types=1);
  * @license MIT
  */
 
-namespace Respinar\ContaoPodcastBundle\EventListener;
+namespace Respinar\PodcastBundle\EventListener;
 
 use Contao\CoreBundle\Event\PreviewUrlConvertEvent;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
-use Respinar\ContaoPodcastBundle\Model\EpisodeModel;
+use Respinar\PodcastBundle\Model\EpisodeModel;
 
-use Respinar\ContaoPodcastBundle\Podcast;
+use Respinar\PodcastBundle\Podcast;
 use Spatie\SchemaOrg\Episode;
 
 #[AsEventListener('contao.preview_url_convert')]
