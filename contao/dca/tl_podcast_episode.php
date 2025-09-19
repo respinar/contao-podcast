@@ -18,7 +18,7 @@ use Contao\BackendUser;
 use Contao\Config;
 use Contao\System;
 
-use Respinar\ContaoPodcastBundle\Model\ChannelModel;
+use Respinar\PodcastBundle\Model\ChannelModel;
 
 System::loadLanguageFile('tl_content');
 
