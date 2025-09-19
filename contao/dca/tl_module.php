@@ -11,8 +11,8 @@ declare(strict_types=1);
  */
 
 use Contao\Controller;
-use Respinar\ContaoPodcastBundle\Controller\FrontendModule\PodcastChannelController;
-use Respinar\ContaoPodcastBundle\Controller\FrontendModule\PodcastEpisodeController;
+use Respinar\PodcastBundle\Controller\FrontendModule\PodcastChannelController;
+use Respinar\PodcastBundle\Controller\FrontendModule\PodcastEpisodeController;
 
 /**
  * Frontend modules
