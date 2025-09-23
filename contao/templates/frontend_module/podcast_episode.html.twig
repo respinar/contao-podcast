@@ -1,0 +1,15 @@
+{% extends "@Contao/content_element/_base.html.twig" %}
+
+{% block content %}
+    <div class="podcast_episode">
+        {{ episode|raw }}
+    </div>
+
+    {% if referer %}
+        {# indexer::stop #}
+        <p class="back">
+            <a href="{{ referer }}" title="{{ back }}">{{ back }}</a>
+        </p>
+        {# indexer::continue #}
+    {% endif %}
+{% endblock %}
