@@ -1,0 +1,13 @@
+{% extends "@Contao/content_element/_base.html.twig" %}
+
+{% block content %}
+    {% if episodes is empty %}
+        <p class="message">{{ message }}</p>
+    {% else %}
+        <div class="podcast_episodes {{ podcast_listClass }}">
+            {{ episodes|join('')|raw }}
+        </div>
+
+        {{ pagination|raw }}
+    {% endif %}
+{% endblock %}
