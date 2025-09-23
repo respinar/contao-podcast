@@ -1,0 +1,44 @@
+{% use "@Contao/component/_figure.html.twig" %}
+
+<div class="episode_full">
+	<div class="episode_header">
+
+		{% if figure %}
+			{% with {figure: figure} %}
+			{{ block('figure_component') }}
+			{% endwith %}
+		{% endif %}
+
+		<h1>{{ title }}</h1>
+
+		<p class="info">
+			<time datetime="{{ datetime }}">{{ date }}</time>
+			{{ author }}
+			~
+			{{ duration }}
+		</p>
+
+		<figure class="{{ containerClass }}">
+			<audio controls>
+				<source type="{{ file.mime }}" src="{{ file.path }}">
+			</audio>
+
+			{% if caption %}
+				<figcaption class="caption">{{ caption }}</figcaption>
+			{% endif %}
+		</figure>
+
+		{% if subheadline %}
+			<h2>{{ subheadline }}</h2>
+		{% endif %}
+
+		{% if teaser %}
+			<div class="teaser">
+				{{ teaser|raw }}
+			</div>
+		{% endif %}
+
+	</div>
+</div>
+
+{% do add_schema_org(schemaOrgData) %}
