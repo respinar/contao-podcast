@@ -1,0 +1,26 @@
+{% use "@Contao/component/_figure.html.twig" %}
+
+<div class="episode_teaser">
+	<a href="{{ link }}">
+		{% if figure %}
+			{% with {figure: figure} %}
+			{{ block('figure_component') }}
+			{% endwith %}
+		{% endif %}
+	</a>
+
+	<h2>
+		<a href="{{ link }}">{{ title }}</a>
+	</h2>
+
+	<p class="info">
+		<time datetime="{{ datetime }}">{{ date }}</time>
+		{{ author }}
+		~
+		{{ duration }}
+	</p>
+
+	{% if subheadline %}
+		<h3>{{ subheadline }}</h3>
+	{% endif %}
+</div>
