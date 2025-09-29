@@ -23,57 +23,54 @@ use Contao\Config;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-use Respinar\PodcastBundle\Classes\Podcast;
-
 use Respinar\PodcastBundle\Model\EpisodeModel;
 use Respinar\PodcastBundle\Model\ChannelModel;
 
 use Respinar\PodcastBundle;
+use Respinar\PodcastBundle\Classes\PodcastParser;
+use Respinar\PodcastBundle\Classes\PodcastUtil;
 
 #[AsFrontendModule(category: 'podcasts', template: 'mod_podcast_channel')]
 class PodcastChannelController extends AbstractFrontendModuleController
 {
-    public const TYPE = 'podcast_channel';
+	public const TYPE = 'podcast_channel';
 
-    protected function getResponse(Template $template, ModuleModel $model, Request $request): Response
-    {
+	public function __construct(
+		private readonly PodcastParser $podcastParser,
+	) {}
 
-        if (Podcast::isProtected($model->podcast_channel)) {
+	protected function getResponse(Template $template, ModuleModel $model, Request $request): Response
+	{
+
+		if (PodcastUtil::isProtected($model->podcast_channel)) {
 			$template->message = $GLOBALS['TL_LANG']['MSC']['accessError'];
-            return $template->getResponse();
-        }
+			return $template->getResponse();
+		}
 
-        $objChannel = ChannelModel::findOneBy('id', $model->podcast_channel);
+		$objChannel = ChannelModel::findOneBy('id', $model->podcast_channel);
 
-        // No Podcast Channel
-		if (empty($objChannel))
-		{
+		// No Podcast Channel
+		if (empty($objChannel)) {
 			$template->message = $GLOBALS['TL_LANG']['MSC']['notExist'];
 			return  $template->getResponse();
 		}
 
 		$page = $this->getPageModel();
 
-        $offset = intval($model->skipFirst);
+		$offset = intval($model->skipFirst);
 		$limit = null;
 
 		// Maximum number of items
-		if ($model->numberOfItems > 0)
-		{
+		if ($model->numberOfItems > 0) {
 			$limit = $model->numberOfItems;
 		}
 
 		// Handle featured product
-		if ($model->podcast_featured == 'featured')
-		{
+		if ($model->podcast_featured == 'featured') {
 			$blnFeatured = true;
-		}
-		elseif ($model->podcast_featured == 'unfeatured')
-		{
+		} elseif ($model->podcast_featured == 'unfeatured') {
 			$blnFeatured = false;
-		}
-		else
-		{
+		} else {
 			$blnFeatured = null;
 		}
 
@@ -81,8 +78,7 @@ class PodcastChannelController extends AbstractFrontendModuleController
 
 		$intTotal = EpisodeModel::countPublishedByPid($model->podcast_channel, $blnFeatured);
 
-		if ($intTotal < 1)
-		{
+		if ($intTotal < 1) {
 			$template->message = $GLOBALS['TL_LANG']['MSC']['emptyChannel'];
 			return $template->getResponse();
 		}
@@ -90,11 +86,9 @@ class PodcastChannelController extends AbstractFrontendModuleController
 		$total = $intTotal - $offset;
 
 		// Split the results
-		if ($model->perPage > 0 && (!isset($limit) || $model->numberOfItems > $model->perPage))
-		{
+		if ($model->perPage > 0 && (!isset($limit) || $model->numberOfItems > $model->perPage)) {
 			// Adjust the overall limit
-			if (isset($limit))
-			{
+			if (isset($limit)) {
 				$total = min($limit, $total);
 			}
 
@@ -103,8 +97,7 @@ class PodcastChannelController extends AbstractFrontendModuleController
 			$page = Input::get($id) ?: 1;
 
 			// Do not index or cache the page if the page number is outside the range
-			if ($page < 1 || $page > max(ceil($total/$model->perPage), 1))
-			{
+			if ($page < 1 || $page > max(ceil($total / $model->perPage), 1)) {
 				global $objPage;
 				$objPage->noSearch = 1;
 				$objPage->cache = 0;
@@ -120,8 +113,7 @@ class PodcastChannelController extends AbstractFrontendModuleController
 			$skip = intval($model->skipFirst);
 
 			// Overall limit
-			if ($offset + $limit > $total + $skip)
-			{
+			if ($offset + $limit > $total + $skip) {
 				$limit = $total + $skip - $offset;
 			}
 
@@ -131,10 +123,8 @@ class PodcastChannelController extends AbstractFrontendModuleController
 		}
 
 		$arrOptions = array();
-		if ($model->podcast_sortBy)
-		{
-			switch ($model->podcast_sortBy)
-			{
+		if ($model->podcast_sortBy) {
+			switch ($model->podcast_sortBy) {
 				case 'number_asc':
 					$arrOptions['order'] = "episodeNumber ASC";
 					break;
@@ -151,20 +141,17 @@ class PodcastChannelController extends AbstractFrontendModuleController
 		}
 
 
-        // Get the items
-		if (isset($limit))
-		{
+		// Get the items
+		if (isset($limit)) {
 			$objEpisodes = EpisodeModel::findPublishedByPid($model->podcast_channel, $blnFeatured, $limit, $offset, $arrOptions);
-		}
-		else
-		{
+		} else {
 			$objEpisodes = EpisodeModel::findPublishedByPid($model->podcast_channel, $blnFeatured, 0, $offset, $arrOptions);
 		}
 
-        //$objEpisodes = EpisodeModel::findBy('pid', $model->podcast_channel);
+		//$objEpisodes = EpisodeModel::findBy('pid', $model->podcast_channel);
 
-        $template->episodes = Podcast::parseEpisodes($objEpisodes, $model, $page);
+		$template->episodes = $this->podcastParser->parseEpisodes($objEpisodes, $model, $page);
 
-        return $template->getResponse();
-    }
+		return $template->getResponse();
+	}
 }
