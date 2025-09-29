@@ -15,37 +15,46 @@ namespace Respinar\PodcastBundle\Controller\ContentElement;
 use Contao\ContentModel;
 use Contao\CoreBundle\Controller\ContentElement\AbstractContentElementController;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsContentElement;
+use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\Template;
-use Contao\System;
+use Respinar\PodcastBundle\Classes\PodcastParser;
+use Respinar\PodcastBundle\Model\EpisodeModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-
-use Respinar\PodcastBundle\Classes\Podcast;
-
-use Respinar\PodcastBundle\Model\ChannelModel;
-use Respinar\PodcastBundle\Model\EpisodeModel;
 
 #[AsContentElement(category: 'media', template: 'ce_podcast')]
 class PodcastController extends AbstractContentElementController
 {
-
     public const TYPE = 'podcast';
 
+    public function __construct(
+        private readonly PodcastParser $podcastParser,
+        private readonly ScopeMatcher $scopeMatcher,
+    ) {
+    }
 
-    protected function getResponse(Template $template, ContentModel $model, Request $request): Response
-    {
-        $page = $this->getPageModel();
+    protected function getResponse(
+        Template $template,
+        ContentModel $model,
+        Request $request,
+    ): Response {
+        if ($this->scopeMatcher->isBackendRequest($request)) {
+            return $template->getResponse();
+        }
 
-        if ($request && System::getContainer()->get('contao.routing.scope_matcher')->isBackendRequest($request))
-		{
-			return $template->getResponse();
-		}
+        $episode = EpisodeModel::findByPk($model->podcast_episode);
 
-        $objEpisode = EpisodeModel::findOneByID($model->podcast_episode);
+        if (!$episode instanceof EpisodeModel) {
+            return new Response('', Response::HTTP_NOT_FOUND);
+        }
 
         $model->imgSize = $model->size;
 
-        $template->episode = Podcast::parseEpisode($objEpisode, $model, $page);
+        $template->episode = $this->podcastParser->parseEpisode(
+            $episode,
+            $model,
+            $this->getPageModel(),
+        );
 
         return $template->getResponse();
     }
