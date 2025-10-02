@@ -22,7 +22,7 @@ use Respinar\PodcastBundle\Model\EpisodeModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-#[AsContentElement(category: 'media', template: 'ce_podcast')]
+#[AsContentElement(category: 'media')]
 class PodcastController extends AbstractContentElementController
 {
     public const TYPE = 'podcast';
