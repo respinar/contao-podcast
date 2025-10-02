@@ -60,15 +60,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['podcast_featured'] = [
 	'sql' => "varchar(16) COLLATE ascii_bin NOT NULL default 'all_items'"
 ];
 
-$GLOBALS['TL_DCA']['tl_module']['fields']['podcast_metaFields'] = [
-	'exclude' => true,
-	'inputType' => 'checkbox',
-	'options' => ['date', 'author', 'comments'],
-	'reference' => &$GLOBALS['TL_LANG']['MSC'],
-	'eval' => ['multiple' => true],
-	'sql' => "varchar(255) COLLATE ascii_bin NOT NULL default 'a:2:{i:0;s:4:\"date\";i:1;s:6:\"author\";}'"
-];
-
 $GLOBALS['TL_DCA']['tl_module']['fields']['podcast_template'] = [
 	'exclude' => true,
 	'inputType' => 'select',
