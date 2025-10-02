@@ -30,7 +30,7 @@ use Respinar\PodcastBundle\Classes\PodcastParser;
 use Respinar\PodcastBundle\Model\EpisodeModel;
 use Respinar\PodcastBundle\Model\ChannelModel;
 
-#[AsFrontendModule(category: 'podcasts', template: 'mod_podcast_episode')]
+#[AsFrontendModule(category: 'podcasts')]
 class PodcastEpisodeController extends AbstractFrontendModuleController
 {
 	public const TYPE = 'podcast_episode';
