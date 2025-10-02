@@ -20,15 +20,15 @@ use Respinar\PodcastBundle\Controller\FrontendModule\PodcastEpisodeController;
 $GLOBALS['TL_DCA']['tl_module']['palettes'][PodcastChannelController::TYPE] = '
     {title_legend},name,headline,type;
     {config_legend},podcast_channel,numberOfItems,podcast_featured,podcast_sortBy,skipFirst,perPage;
-    {template_legend:hide},podcast_metaFields,;
-    {image_legend:hide},customTpl,podcast_template,podcast_listClass,imgSize;
+    {template_legend:hide},customTpl,podcast_listClass,podcast_template;
+    {image_legend:hide},imgSize;
     {protected_legend:hide},protected;
     {expert_legend:hide},guests,cssID';
 $GLOBALS['TL_DCA']['tl_module']['palettes'][PodcastEpisodeController::TYPE] = '
     {title_legend},name,headline,type;
     {config_legend},podcast_channels,overviewPage,customLabel;
-    {meta_legend:hide},podcast_metaFields;
-    {template_legend:hide},podcast_template,customTpl,imgSize;
+    {template_legend:hide},customTpl,podcast_template;
+		{image_legend},imgSize;
     {protected_legend:hide},protected;
     {expert_legend:hide},guests,cssID';
 
@@ -66,7 +66,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['podcast_template'] = [
 	'options_callback' => static function () {
 		return Controller::getTemplateGroup('podcast_');
 	},
-	'eval' => ['includeBlankOption' => true, 'chosen' => true, 'tl_class' => 'w50'],
+	'eval' => ['includeBlankOption' => true, 'chosen' => true, 'tl_class' => 'w50 clr'],
 	'sql' => "varchar(64) COLLATE ascii_bin NOT NULL default ''"
 ];
 
