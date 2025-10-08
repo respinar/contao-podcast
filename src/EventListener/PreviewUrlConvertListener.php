@@ -14,6 +14,7 @@ namespace Respinar\PodcastBundle\EventListener;
 
 use Contao\CoreBundle\Event\PreviewUrlConvertEvent;
 use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\CoreBundle\Routing\ContentUrlGenerator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Respinar\PodcastBundle\Model\EpisodeModel;
@@ -26,8 +27,10 @@ class PreviewUrlConvertListener
 {
     private ContaoFramework  $framework;
 
-    public function __construct(ContaoFramework $framework)
-    {
+    public function __construct(
+        ContaoFramework $framework,
+        private ContentUrlGenerator $contentUrlGenerator,
+    ) {
         $this->framework = $framework;
     }
 
@@ -42,8 +45,7 @@ class PreviewUrlConvertListener
             return;
         }
 
-        $event->setUrl($this->framework->getAdapter(Podcast::class)->generateEpisodeUrl($podcast, false, true));
-
+        $event->setUrl($this->contentUrlGenerator->generate($podcast));
     }
 
     private function getPodcastModel(Request $request): ?EpisodeModel
