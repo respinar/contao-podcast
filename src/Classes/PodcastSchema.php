@@ -13,14 +13,19 @@ declare(strict_types=1);
 namespace Respinar\PodcastBundle\Classes;
 
 use Contao\ContentModel;
+use Contao\CoreBundle\Routing\ContentUrlGenerator;
 use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\UserModel;
 use Respinar\PodcastBundle\Model\EpisodeModel;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 final readonly class PodcastSchema
 {
+    public function __construct(
+        private ContentUrlGenerator $contentUrlGenerator,
+    ) {}
 
     public function generate(
         EpisodeModel $episode,
@@ -30,7 +35,7 @@ final readonly class PodcastSchema
         $jsonLd = [
             '@type' => 'PodcastEpisode',
             'identifier' => '#/schema/podcastepisode/' . $episode->id,
-            'url' => '/' . PodcastUtil::generateEpisodeUrl($episode),
+            'url' => $this->contentUrlGenerator->generate($episode, [], UrlGeneratorInterface::ABSOLUTE_URL),
             'name' => $episode->title,
             'datePublished' => date('Y-m-d', (int) $episode->date),
             'duration' => PodcastUtil::iso8601Duration((int) $episode->duration),
