@@ -22,42 +22,6 @@ use Respinar\PodcastBundle\Model\EpisodeModel;
 
 final class PodcastUtil
 {
-  /**
-   * URL cache.
-   */
-  private static array $urlCache = [];
-
-  /**
-   * Generate an episode URL.
-   */
-  public static function generateEpisodeUrl(
-    EpisodeModel $episode,
-    bool $absolute = false,
-  ): string {
-    $cacheKey = sprintf(
-      'id_%d%s',
-      $episode->id,
-      $absolute ? '_absolute' : '',
-    );
-
-    if (isset(self::$urlCache[$cacheKey])) {
-      return self::$urlCache[$cacheKey];
-    }
-
-    $page = PageModel::findByPk($episode->getRelated('pid')->jumpTo);
-
-    if (!$page instanceof PageModel) {
-      return self::$urlCache[$cacheKey] = StringUtil::ampersand(Environment::get('requestUri'));
-    }
-
-    $parameters = '/' . ($episode->alias ?: $episode->id);
-
-    return self::$urlCache[$cacheKey] = StringUtil::ampersand(
-      $absolute
-        ? $page->getAbsoluteUrl($parameters)
-        : $page->getFrontendUrl($parameters),
-    );
-  }
 
   /**
    * Convert seconds to an ISO 8601 duration.
