@@ -14,6 +14,7 @@ namespace Respinar\PodcastBundle\Classes;
 
 use Contao\ContentModel;
 use Contao\CoreBundle\Image\Studio\Studio;
+use Contao\CoreBundle\Routing\ContentUrlGenerator;
 use Contao\Date;
 use Contao\File;
 use Contao\FilesModel;
@@ -31,6 +32,7 @@ final readonly class PodcastParser
 	public function __construct(
 		private Studio $studio,
 		private PodcastSchema $schema,
+		private ContentUrlGenerator $contentUrlGenerator,
 	) {}
 
 	public function parseEpisode(EpisodeModel $episode, ModuleModel|ContentModel $model, PageModel $page,): string
@@ -39,7 +41,7 @@ final readonly class PodcastParser
 
 		$template->setData($episode->row());
 
-		$template->link = PodcastUtil::generateEpisodeUrl($episode);
+		$template->link = $this->contentUrlGenerator->generate($episode);		
 
 		$template->date = Date::parse($page->dateFormat, $episode->date);
 
