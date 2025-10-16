@@ -27,15 +27,13 @@ $GLOBALS['TL_DCA']['tl_content']['palettes'][PodcastController::TYPE] = '
 
 // Add fields to tl_content
 $GLOBALS['TL_DCA']['tl_content']['fields']['podcast_episode'] = [
-	'exclude' => true,
 	'inputType' => 'select',
-    'foreignKey' => 'tl_podcast_episode.title',
+	'foreignKey' => 'tl_podcast_episode.title',
 	'eval' => ['multiple' => false, 'foreignTable' => 'tl_podcast_episode', 'chosen' => true, 'mandatory' => true, 'tl_class' => 'w50'],
 	'sql' => "blob NULL"
 ];
 
 $GLOBALS['TL_DCA']['tl_content']['fields']['podcast_metaFields'] = [
-	'exclude' => true,
 	'inputType' => 'checkbox',
 	'options' => ['date', 'author', 'comments'],
 	'reference' => &$GLOBALS['TL_LANG']['MSC'],
@@ -44,7 +42,6 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['podcast_metaFields'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_content']['fields']['podcast_template'] = [
-	'exclude' => true,
 	'inputType' => 'select',
 	'options_callback' => static function () {
 		return Controller::getTemplateGroup('podcast_');
