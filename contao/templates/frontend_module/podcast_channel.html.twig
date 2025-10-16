@@ -4,7 +4,7 @@
     {% if episodes is empty %}
         <p class="message">{{ message }}</p>
     {% else %}
-        <div class="podcast_episodes {{ podcast_listClass }}">
+        <div class="podcast_episodes {{ data.podcast_listClass }}">
             {{ episodes|join('')|raw }}
         </div>
 
