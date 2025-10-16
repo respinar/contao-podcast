@@ -26,74 +26,61 @@ System::loadLanguageFile('tl_content');
  * Table tl_podcast_episode
  */
 $GLOBALS['TL_DCA']['tl_podcast_episode'] = [
-    'config' => [
-        'dataContainer' => DC_Table::class,
-        'ptable' => 'tl_podcast_channel',
-        'enableVersioning' => true,
-        'switchToEdit' => true,
-        'markAsCopy' => 'headline',
-        'sql' => [
-            'keys' => [
-                'id' => 'primary',
+	'config' => [
+		'dataContainer' => DC_Table::class,
+		'ptable' => 'tl_podcast_channel',
+		'enableVersioning' => true,
+		'switchToEdit' => true,
+		'markAsCopy' => 'headline',
+		'sql' => [
+			'keys' => [
+				'id' => 'primary',
 				'alias' => 'index',
 				'pid,published,featured,start,stop' => 'index'
 			]
 		],
 	],
-    'list' => [
-        'sorting' => [
-            'mode' => DataContainer::MODE_PARENT,
-            'fields' => ['date'],
-            'flag' => DataContainer::SORT_INITIAL_LETTER_ASC,
-            'headerFields'=> ['title', 'jumpTo', 'author', 'feed', 'feedAlias'],
+	'list' => [
+		'sorting' => [
+			'mode' => DataContainer::MODE_PARENT,
+			'fields' => ['date'],
+			'flag' => DataContainer::SORT_INITIAL_LETTER_ASC,
+			'headerFields' => ['title', 'jumpTo', 'author', 'feed', 'feedAlias'],
 
-            'panelLayout' => 'filter;sort,search,limit'
+			'panelLayout' => 'filter;sort,search,limit'
 		],
-        'label' => [
-            'fields' => ['date', 'episodeNumber', 'title'],
-            'format' => '<span style="color:#999;padding-left:3px">[%s]</span> episode: %s - %s',
+		'label' => [
+			'fields' => ['date', 'episodeNumber', 'title'],
+			'format' => '<span class="label-info">[%s]</span> episode: %s - %s',
 		],
-        'global_operations' => [
-            'all' => [
-                'href' => 'act=select',
-                'class' => 'header_edit_all',
-                'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="e"'
+		'global_operations' => [
+			'all' => [
+				'href' => 'act=select',
+				'class' => 'header_edit_all',
+				'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="e"'
 			]
 		],
-        'operations' => [
-            'edit' => [
-                'href' => 'act=edit',
-                'icon' => 'edit.svg'
-			],
-            'copy' => [
-                'href' => 'act=copy',
-                'icon' => 'copy.svg'
-			],
-            'delete' => [
-                'href' => 'act=delete',
-                'icon' => 'delete.svg',
-                'attributes' => 'onclick="if(!confirm(\'' . ($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? null) . '\'))return false;Backend.getScrollOffset()"'
-			],
+		'operations' => [
+			'edit',
+			'copy',
+			'delete',
 			'toggle' => [
 				'href' => 'act=toggle&amp;field=published',
 				'icon' => 'visible.svg',
+				'primary'      => true,
 				'showInHeader' => true
 			],
 			'feature' => [
 				'href' => 'act=toggle&amp;field=featured',
 				'icon' => 'featured.svg',
+				'primary'      => true,
 			],
-            'show' => [
-                'href' => 'act=show',
-                'icon' => 'show.svg',
-                'attributes' => 'style="margin-right:3px"'
-			],
+			'show',
 		]
 	],
 
-    // Palettes
-    'palettes' => [
-		//'__selector__' => ['addImage'],
+	// Palettes
+	'palettes' => [
 		'default' => '
 			{title_legend},title,featured,alias,episodeNumber;
 			{date_legend},date,author;
@@ -105,40 +92,34 @@ $GLOBALS['TL_DCA']['tl_podcast_episode'] = [
 			{publish_legend},published,start,stop'
 	],
 
-	// Subpalettes
-	'subpalettes' => [
-		//'addImage' => 'singleSRC',
-	],
-    'fields' => [
-        'id'  => [
-            'sql' => "int(10) unsigned NOT NULL auto_increment"
+	// Fields	
+	'fields' => [
+		'id'  => [
+			'sql' => ['type' => 'integer', 'unsigned' => true, 'autoincrement' => true]
 		],
-        'pid' => [
+		'pid' => [
 			'foreignKey' => 'tl_podcast_channel.title',
-			'sql' => "int(10) unsigned NOT NULL default 0",
+			'sql' => ['type' => 'integer', 'unsigned' => true, 'default' => 0],
 			'relation' => ['type' => 'belongsTo', 'load' => 'lazy']
 		],
-        'tstamp'  => [
-            'sql' => "int(10) unsigned NOT NULL default '0'"
+		'tstamp'  => [
+			'sql' => ['type' => 'integer', 'unsigned' => true, 'default' => 0]
 		],
-        'title' => [
-            'exclude' => true,
+		'title' => [
 			'search' => true,
 			'inputType' => 'text',
-            'flag' => DataContainer::SORT_INITIAL_LETTER_ASC,
+			'flag' => DataContainer::SORT_INITIAL_LETTER_ASC,
 			'eval' => ['mandatory' => true, 'maxlength' => 255, 'tl_class' => 'w50'],
 			'sql' => "varchar(255) NOT NULL default ''"
 		],
-        'featured' => [
-			'exclude' => true,
+		'featured' => [
 			'toggle' => true,
 			'filter' => true,
 			'inputType' => 'checkbox',
 			'eval' => ['tl_class' => 'w50 m12'],
-			'sql' => "char(1) NOT NULL default ''"
+			'sql' => ['type' => 'boolean', 'default' => false]
 		],
 		'alias' => [
-			'exclude' => true,
 			'search' => true,
 			'inputType' => 'text',
 			'eval' => ['rgxp' => 'alias', 'doNotCopy' => true, 'unique' => true, 'maxlength' => 255, 'tl_class' => 'w50'],
@@ -149,7 +130,6 @@ $GLOBALS['TL_DCA']['tl_podcast_episode'] = [
 		],
 		'author' => [
 			'default' => BackendUser::getInstance()->id,
-			'exclude' => true,
 			'search' => true,
 			'filter' => true,
 			'sorting' => true,
@@ -162,101 +142,83 @@ $GLOBALS['TL_DCA']['tl_podcast_episode'] = [
 		],
 		'date' => [
 			'default' => time(),
-			'exclude' => true,
 			'filter' => true,
 			'sorting' => true,
 			'flag' => DataContainer::SORT_MONTH_DESC,
 			'inputType' => 'text',
 			'eval' => ['rgxp' => 'date', 'mandatory' => true, 'doNotCopy' => true, 'datepicker' => true, 'tl_class' => 'w50 wizard'],
-			// 'load_callback' => array
-			// (
-			// 	['tl_news', 'loadDate')
-			// ),
 			'sql' => "int(10) unsigned NOT NULL default 0"
 		],
-        'episodeNumber' => [
-			'exclude' => true,
+		'episodeNumber' => [
 			'sorting' => true,
 			'inputType' => 'text',
 			'eval' => ['rgxp' => 'number', 'mandatory' => true, 'doNotCopy' => true, 'tl_class' => 'w50'],
 			'sql' => "int(10) unsigned NULL"
 		],
 		'pageTitle' => [
-			'exclude' => true,
 			'search' => true,
 			'inputType' => 'text',
 			'eval' => ['maxlength' => 255, 'decodeEntities' => true, 'tl_class' => 'w50'],
 			'sql' => "varchar(255) NOT NULL default ''"
 		],
 		'description' => [
-			'exclude' => true,
 			'search' => true,
 			'inputType' => 'textarea',
 			'eval' => ['style' => 'height:60px', 'decodeEntities' => true, 'tl_class' => 'clr'],
 			'sql' => "text NULL"
 		],
 		'duration' => [
-			'exclude' => true,
 			'inputType' => 'text',
 			'eval' => ['rgxp' => 'number', 'mandatory' => true, 'doNotCopy' => true, 'tl_class' => 'w50'],
 			'sql' => "int(5) unsigned NULL"
 		],
 		'subheadline' => [
-			'exclude' => true,
 			'search' => true,
 			'inputType' => 'text',
 			'eval' => ['maxlength' => 255, 'tl_class' => 'long'],
 			'sql' => "varchar(255) NOT NULL default ''"
 		],
 		'teaser' => [
-			'exclude' => true,
 			'search' => true,
 			'inputType' => 'textarea',
 			'eval' => ['rte' => 'tinyMCE', 'tl_class' => 'clr'],
 			'sql' => "text NULL"
 		],
 		'coverSRC' => [
-			'exclude' => true,
 			'inputType' => 'fileTree',
 			'eval' => ['fieldType' => 'radio', 'filesOnly' => true, 'extensions' => '%contao.image.valid_extensions%', 'mandatory' => true],
 			'sql' => "binary(16) NULL"
 		],
 		'podcastSRC' => [
-			'exclude' => true,
 			'inputType' => 'fileTree',
-			'eval' => ['multiple'=>false, 'fieldType' => 'radio', 'filesOnly' => true, 'isDownloads' => true, 'extensions' => 'mp3, m4a, ogg', 'mandatory' => true],
+			'eval' => ['multiple' => false, 'fieldType' => 'radio', 'filesOnly' => true, 'isDownloads' => true, 'extensions' => 'mp3, m4a, ogg', 'mandatory' => true],
 			'sql' => "binary(16) NULL"
 		],
 		'cssClass' => [
-			'exclude' => true,
 			'inputType' => 'text',
 			'eval' => ['tl_class' => 'w50'],
 			'sql' => "varchar(255) NOT NULL default ''"
 		],
 		'noComments' => [
-			'exclude' => true,
 			'filter' => true,
 			'inputType' => 'checkbox',
 			'eval' => ['tl_class' => 'w50 m12'],
-			'sql' => "char(1) NOT NULL default ''"
+			'sql' => ['type' => 'boolean', 'default' => true]
 		],
 		'published' => [
-			'exclude' => true,
 			'toggle' => true,
 			'filter' => true,
 			'flag' => DataContainer::SORT_INITIAL_LETTER_ASC,
 			'inputType' => 'checkbox',
 			'eval' => ['doNotCopy' => true],
-			'sql' => "char(1) NOT NULL default ''"
+			'sql' => ['type' => 'boolean', 'default' => true]
 		],
 		'start' => [
-			'exclude' => true,
 			'inputType' => 'text',
 			'eval' => ['rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'],
 			'sql' => "varchar(10) NOT NULL default ''"
 		],
 		'stop' => [
-			'exclude' => true,
 			'inputType' => 'text',
 			'eval' => ['rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'],
 			'sql' => "varchar(10) NOT NULL default ''"
@@ -292,22 +254,16 @@ class tl_podcast_episode extends Backend
 	 */
 	public function generateAlias($varValue, DataContainer $dc)
 	{
-		$aliasExists = function (string $alias) use ($dc): bool
-		{
+		$aliasExists = function (string $alias) use ($dc): bool {
 			return $this->Database->prepare("SELECT id FROM tl_podcast_episode WHERE alias=? AND id!=?")->execute($alias, $dc->id)->numRows > 0;
 		};
 
 		// Generate alias if there is none
-		if (!$varValue)
-		{
+		if (!$varValue) {
 			$varValue = System::getContainer()->get('contao.slug')->generate($dc->activeRecord->title, ChannelModel::findByPk($dc->activeRecord->pid)->jumpTo, $aliasExists);
-		}
-		elseif (preg_match('/^[1-9]\d*$/', $varValue))
-		{
+		} elseif (preg_match('/^[1-9]\d*$/', $varValue)) {
 			throw new Exception(sprintf($GLOBALS['TL_LANG']['ERR']['aliasNumeric'], $varValue));
-		}
-		elseif ($aliasExists($varValue))
-		{
+		} elseif ($aliasExists($varValue)) {
 			throw new Exception(sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $varValue));
 		}
 
