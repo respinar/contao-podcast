@@ -32,27 +32,22 @@ $GLOBALS['TL_DCA']['tl_module']['palettes'][PodcastEpisodeController::TYPE] = '
     {protected_legend:hide},protected;
     {expert_legend:hide},guests,cssID';
 
-
-
 // Add fields to tl_module
 $GLOBALS['TL_DCA']['tl_module']['fields']['podcast_channel'] = [
-	'exclude' => true,
 	'inputType' => 'radio',
-    'foreignKey' => 'tl_podcast_channel.title',
-	'eval' => ['multiple'=>false, 'foreignTable' => 'tl_podcast_channel', 'mandatory' => true],
+	'foreignKey' => 'tl_podcast_channel.title',
+	'eval' => ['multiple' => false, 'foreignTable' => 'tl_podcast_channel', 'mandatory' => true],
 	'sql' => "int(10) unsigned NULL"
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['podcast_channels'] = [
-	'exclude' => true,
 	'inputType' => 'checkbox',
-    'foreignKey' => 'tl_podcast_channel.title',
+	'foreignKey' => 'tl_podcast_channel.title',
 	'eval' => ['multiple' => true, 'foreignTable' => 'tl_podcast_channel', 'mandatory' => true],
 	'sql' => "blob NULL"
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['podcast_featured'] = [
-	'exclude' => true,
 	'inputType' => 'select',
 	'options' => ['all_items', 'featured', 'unfeatured', 'featured_first'],
 	'reference' => &$GLOBALS['TL_LANG']['tl_module'],
@@ -61,7 +56,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['podcast_featured'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['podcast_template'] = [
-	'exclude' => true,
 	'inputType' => 'select',
 	'options_callback' => static function () {
 		return Controller::getTemplateGroup('podcast_');
@@ -71,16 +65,14 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['podcast_template'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['podcast_listClass'] = [
-	'exclude' => true,
 	'inputType' => 'text',
-	'eval' => ['maxlength'=>128, 'tl_class' => 'w50'],
+	'eval' => ['maxlength' => 128, 'tl_class' => 'w50'],
 	'sql' => "varchar(255) NOT NULL default ''"
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['podcast_sortBy'] = [
-	'exclude' => true,
 	'inputType' => 'select',
-    'options' => ['number_asc','number_desc','date_asc', 'date_desc'],
+	'options' => ['number_asc', 'number_desc', 'date_asc', 'date_desc'],
 	'reference' => &$GLOBALS['TL_LANG']['tl_module'],
 	'eval' => ['tl_class' => 'w50'],
 	'sql' => "varchar(32) COLLATE ascii_bin NOT NULL default 'number_desc'"
