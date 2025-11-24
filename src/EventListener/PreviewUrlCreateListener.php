@@ -41,7 +41,7 @@ class PreviewUrlCreateListener
 
         $request = $this->requestStack->getCurrentRequest();
 
-        if (null === $request) {
+        if (!$request instanceof Request) {
             throw new \RuntimeException('The request stack did not contain a request');
         }
 
@@ -60,7 +60,7 @@ class PreviewUrlCreateListener
     /**
      * @return int|string
      */
-    private function getId(PreviewUrlCreateEvent $event, Request $request)
+    private function getId(PreviewUrlCreateEvent $event, Request $request): string|int|float|bool|null
     {
         // Overwrite the ID if the podcast settings are edited
         if ('tl_podcast_episode' === $request->query->get('table') && 'edit' === $request->query->get('act')) {
