@@ -243,16 +243,14 @@ class tl_podcast_episode extends Backend
 	}
 
 	/**
-	 * Auto-generate the news alias if it has not been set yet
-	 *
-	 * @param mixed         $varValue
-	 * @param DataContainer $dc
-	 *
-	 * @return string
-	 *
-	 * @throws Exception
-	 */
-	public function generateAlias($varValue, DataContainer $dc)
+     * Auto-generate the news alias if it has not been set yet
+     *
+     * @param mixed         $varValue
+     *
+     * @return string
+     * @throws Exception
+     */
+    public function generateAlias($varValue, DataContainer $dc)
 	{
 		$aliasExists = function (string $alias) use ($dc): bool {
 			return $this->Database->prepare("SELECT id FROM tl_podcast_episode WHERE alias=? AND id!=?")->execute($alias, $dc->id)->numRows > 0;
