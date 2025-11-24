@@ -31,7 +31,7 @@ class EpisodeModel extends Model
 		}
 
 		$t = static::$strTable;
-		$arrColumns = !preg_match('/^[1-9]\d*$/', $varId) ? array("CAST($t.alias AS BINARY)=?") : array("$t.id=?");
+		$arrColumns = preg_match('/^[1-9]\d*$/', $varId) ? array("$t.id=?") : array("CAST($t.alias AS BINARY)=?");
 		$arrColumns[] = "$t.pid IN(" . implode(',', array_map('\intval', $arrPids)) . ")";
 
 		if (!static::isPreviewMode($arrOptions))
@@ -70,7 +70,7 @@ class EpisodeModel extends Model
 	 */
 	public static function countPublishedByPid(int $pid, bool $blnFeatured=null, array $arrOptions=array()): int
 	{
-		if (empty($pid))
+		if ($pid === 0)
 		{
 			return 0;
 		}
@@ -101,7 +101,7 @@ class EpisodeModel extends Model
 	 */
 	public static function findPublishedByPid(int $pid, $blnFeatured=null, int $intLimit=0, int $intOffset=0, array $arrOptions=array()): Collection|EpisodeModel|null
 	{
-		if (empty($pid))
+		if ($pid === 0)
 		{
 			return null;
 		}
