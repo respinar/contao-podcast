@@ -41,7 +41,7 @@ class PreviewUrlConvertListener
             return;
         }
 
-        if (null === ($podcast = $this->getPodcastModel($event->getRequest()))) {
+        if (!($podcast = $this->getPodcastModel($event->getRequest())) instanceof EpisodeModel) {
             return;
         }
 
