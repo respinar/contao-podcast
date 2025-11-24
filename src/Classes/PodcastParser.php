@@ -107,7 +107,7 @@ final readonly class PodcastParser
 			->setSize($size)
 			->buildIfResourceExists();
 
-		if ($figure !== null) {
+		if ($figure instanceof Figure) {
 			$template->figure = $figure;
 		}
 	}
