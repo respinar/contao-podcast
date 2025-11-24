@@ -26,7 +26,6 @@ $GLOBALS['TL_DCA']['tl_podcast_channel'] = [
 		'ctable' => ['tl_podcast_episode'],
 		'switchToEdit'                => true,
 		'enableVersioning'            => true,
-		'markAsCopy'                  => 'title',
 		'markAsCopy' => 'title',
 		'sql' => [
 			'keys' => [
@@ -149,7 +148,7 @@ $GLOBALS['TL_DCA']['tl_podcast_channel'] = [
 			'eval' => ['mandatory' => true, 'maxlength' => 64, 'nospace' => true, 'decodeEntities' => true, 'doNotCopy' => true, 'tl_class' => 'w50'],
 			'sql' => "varchar(64) NOT NULL default ''",
 			'save_callback' => [
-				static function ($value) {
+				static function ($value): string {
 					// Make sure there is at least a basic language
 					if (!preg_match('/^[a-z]{2,}/i', $value)) {
 						throw new RuntimeException($GLOBALS['TL_LANG']['ERR']['language']);
@@ -259,7 +258,7 @@ class tl_podcast_channel extends Backend
 		$this->import(BackendUser::class, 'User');
 	}
 
-	public function manageFeeds($href, $label, $title, $class, $attributes)
+	public function manageFeeds($href, $label, $title, $class, $attributes): string
 	{
 		return '<a href="' . $this->addToUrl($href) . '" class="' . $class . '" title="' . StringUtil::specialchars($title) . '"' . $attributes . '>' . $label . '</a> ';
 	}
