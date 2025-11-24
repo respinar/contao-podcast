@@ -54,7 +54,7 @@ class PodcastEpisodeController extends AbstractFrontendModuleController
 		$objEpisode = EpisodeModel::findPublishedByParentAndIdOrAlias(Input::get('auto_item'), $model->podcast_channels);
 
 		# Throw 404 error if episode not founded.
-		if (null === $objEpisode) {
+		if (!$objEpisode instanceof EpisodeModel) {
 			throw new PageNotFoundException('Page not found: ' . Environment::get('uri'));
 		}
 
