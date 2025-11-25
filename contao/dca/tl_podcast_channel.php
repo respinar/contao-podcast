@@ -58,7 +58,7 @@ $GLOBALS['TL_DCA']['tl_podcast_channel'] = [
 	'subpalettes' => [
 		'protected' => 'groups',
 		'feed' => 'feedAlias,format,language,feedBase,maxItems,imgSize',
-		//'allowComments' => 'notify,sortOrder,perPage,moderate,bbcode,requireLogin,disableCaptcha'
+
 	],
 
 	// Fields
@@ -196,51 +196,7 @@ $GLOBALS['TL_DCA']['tl_podcast_channel'] = [
 			'sql' => "blob NULL",
 			'relation' => ['type' => 'hasMany', 'load' => 'lazy']
 		],
-		'allowComments' => [
-			'filter' => true,
-			'inputType' => 'checkbox',
-			'eval' => ['submitOnChange' => true],
-			'sql' => ['type' => 'boolean', 'default' => false]
-		],
-		'notify' => [
-			'inputType' => 'select',
-			'options' => ['notify_admin', 'notify_author', 'notify_both'],
-			'eval' => ['tl_class' => 'w50'],
-			'reference' => &$GLOBALS['TL_LANG']['tl_podcast_channel'],
-			'sql' => "varchar(16) NOT NULL default 'notify_admin'"
-		],
-		'sortOrder' => [
-			'inputType' => 'select',
-			'options' => ['ascending', 'descending'],
-			'reference' => &$GLOBALS['TL_LANG']['MSC'],
-			'eval' => ['tl_class' => 'w50 clr'],
-			'sql' => "varchar(32) NOT NULL default 'ascending'"
-		],
-		'perPage' => [
-			'inputType' => 'text',
-			'eval' => ['rgxp' => 'natural', 'tl_class' => 'w50'],
-			'sql' => "smallint(5) unsigned NOT NULL default 0"
-		],
-		'moderate' => [
-			'inputType' => 'checkbox',
-			'eval' => ['tl_class' => 'w50'],
-			'sql' => ['type' => 'boolean', 'default' => false]
-		],
-		'bbcode' => [
-			'inputType' => 'checkbox',
-			'eval' => ['tl_class' => 'w50'],
-			'sql' => ['type' => 'boolean', 'default' => false]
-		],
-		'requireLogin' => [
-			'inputType' => 'checkbox',
-			'eval' => ['tl_class' => 'w50'],
-			'sql' => ['type' => 'boolean', 'default' => false]
-		],
-		'disableCaptcha' => [
-			'inputType' => 'checkbox',
-			'eval' => ['tl_class' => 'w50'],
-			'sql' => ['type' => 'boolean', 'default' => false]
-		]
+
 	]
 ];
 
