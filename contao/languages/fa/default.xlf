@@ -18,7 +18,7 @@
         <target>افزودن یک اپیزود به پادکست</target>
       </trans-unit>
       <trans-unit id="FMD.podcast_modules">
-        <source>Podacsts</source>
+        <source>Podcasts</source>
         <target>پادکست‌ها</target>
       </trans-unit>
       <trans-unit id="FMD.podcast_episode.0">
@@ -26,7 +26,7 @@
         <target>اپیزود‌خوان</target>
       </trans-unit>
       <trans-unit id="FMD.podcast_episode.1">
-        <source>Show deatil of an Episode</source>
+        <source>Show detail of an Episode</source>
         <target>نمایش جزئیات یک اپیزود</target>
       </trans-unit>
       <trans-unit id="FMD.podcast_channel.0">
@@ -48,6 +48,10 @@
       <trans-unit id="MSC.emptyChannel">
         <source>There is no episode in this channel!</source>
         <target>هیچ اپیزودی در این کانال وجود ندارد!</target>
+      </trans-unit>
+      <trans-unit id="MSC.podcastOverview">
+        <source>Back to the overview</source>
+        <target>بازگشت به نمای کلی</target>
       </trans-unit>
       <trans-unit id="MSC.podcast_hr">
         <source>hr</source>
