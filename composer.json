@@ -28,6 +28,11 @@
             "Respinar\\PodcastBundle\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Respinar\\PodcastBundle\\Tests\\": "tests/"
+        }
+    },
     "extra": {
         "contao-manager-plugin": "Respinar\\PodcastBundle\\ContaoManager\\Plugin"
     },
