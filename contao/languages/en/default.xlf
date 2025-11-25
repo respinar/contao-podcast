@@ -15,13 +15,13 @@
         <source>Add an Episode of podcast</source>
       </trans-unit>
       <trans-unit id="FMD.podcast_modules">
-        <source>Podacsts</source>
+        <source>Podcasts</source>
       </trans-unit>
       <trans-unit id="FMD.podcast_episode.0">
         <source>Episode reader</source>
       </trans-unit>
       <trans-unit id="FMD.podcast_episode.1">
-        <source>Show deatil of an Episode</source>
+        <source>Show detail of an Episode</source>
       </trans-unit>
       <trans-unit id="FMD.podcast_channel.0">
         <source>Channel list</source>
@@ -37,6 +37,9 @@
       </trans-unit>
       <trans-unit id="MSC.emptyChannel">
         <source>There is no episode in this channel!</source>
+      </trans-unit>
+      <trans-unit id="MSC.podcastOverview">
+        <source>Back to the overview</source>
       </trans-unit>
       <trans-unit id="MSC.podcast_hr">
         <source>hr</source>
