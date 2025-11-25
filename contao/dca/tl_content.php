@@ -30,7 +30,7 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['podcast_episode'] = [
 	'inputType' => 'select',
 	'foreignKey' => 'tl_podcast_episode.title',
 	'eval' => ['multiple' => false, 'foreignTable' => 'tl_podcast_episode', 'chosen' => true, 'mandatory' => true, 'tl_class' => 'w50'],
-	'sql' => "blob NULL"
+	'sql' => "int(10) unsigned NULL"
 ];
 
 $GLOBALS['TL_DCA']['tl_content']['fields']['podcast_metaFields'] = [
