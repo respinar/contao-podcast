@@ -199,12 +199,7 @@ $GLOBALS['TL_DCA']['tl_podcast_episode'] = [
 			'eval' => ['tl_class' => 'w50'],
 			'sql' => "varchar(255) NOT NULL default ''"
 		],
-		'noComments' => [
-			'filter' => true,
-			'inputType' => 'checkbox',
-			'eval' => ['tl_class' => 'w50 m12'],
-			'sql' => ['type' => 'boolean', 'default' => true]
-		],
+
 		'published' => [
 			'toggle' => true,
 			'filter' => true,
@@ -226,11 +221,9 @@ $GLOBALS['TL_DCA']['tl_podcast_episode'] = [
 	]
 ];
 
-/**
- * Provide miscellaneous methods that are used by the data configuration array.
- *
- * @property News $News
- */
+	/**
+	 * Provide miscellaneous methods that are used by the data configuration array.
+	 */
 class tl_podcast_episode extends Backend
 {
 	/**
@@ -243,7 +236,7 @@ class tl_podcast_episode extends Backend
 	}
 
 	/**
-     * Auto-generate the news alias if it has not been set yet
+     * Auto-generate the episode alias if it has not been set yet
      *
      * @param mixed         $varValue
      *
