@@ -25,11 +25,11 @@ final readonly class PodcastSchema
 {
     public function __construct(
         private ContentUrlGenerator $contentUrlGenerator,
+        private PodcastUtil $podcastUtil,
     ) {}
 
     public function generate(
         EpisodeModel $episode,
-        ModuleModel|ContentModel $model,
         ?string $mediaUrl = null,
     ): array {
         $jsonLd = [
@@ -38,7 +38,7 @@ final readonly class PodcastSchema
             'url' => $this->contentUrlGenerator->generate($episode, [], UrlGeneratorInterface::ABSOLUTE_URL),
             'name' => $episode->title,
             'datePublished' => date('Y-m-d', (int) $episode->date),
-            'duration' => PodcastUtil::iso8601Duration((int) $episode->duration),
+            'duration' => $this->podcastUtil->iso8601Duration((int) $episode->duration),
             'episodeNumber' => $episode->episodeNumber,
             'associatedMedia' => [
                 '@type' => 'MediaObject',
