@@ -13,132 +13,131 @@ declare(strict_types=1);
 namespace Respinar\PodcastBundle\Classes;
 
 use Contao\CoreBundle\Security\ContaoCorePermissions;
-use Contao\Environment;
 use Contao\PageModel;
 use Contao\StringUtil;
-use Contao\System;
 use Respinar\PodcastBundle\Model\ChannelModel;
 use Respinar\PodcastBundle\Model\EpisodeModel;
+use Symfony\Bundle\SecurityBundle\Security;
 
 final class PodcastUtil
 {
-
-  /**
-   * Convert seconds to an ISO 8601 duration.
-   */
-  public static function iso8601Duration(int $seconds): string
-  {
-    $hours = intdiv($seconds, 3600);
-    $seconds %= 3600;
-
-    $minutes = intdiv($seconds, 60);
-    $seconds %= 60;
-
-    $duration = 'PT';
-
-    if ($hours > 0) {
-      $duration .= $hours . 'H';
+    public function __construct(
+        private readonly Security $security,
+    ) {
     }
 
-    if ($minutes > 0) {
-      $duration .= $minutes . 'M';
+    /**
+     * Convert seconds to an ISO 8601 duration.
+     */
+    public function iso8601Duration(int $seconds): string
+    {
+        $hours = intdiv($seconds, 3600);
+        $seconds %= 3600;
+
+        $minutes = intdiv($seconds, 60);
+        $seconds %= 60;
+
+        $duration = 'PT';
+
+        if ($hours > 0) {
+            $duration .= $hours . 'H';
+        }
+
+        if ($minutes > 0) {
+            $duration .= $minutes . 'M';
+        }
+
+        if ($seconds > 0 || $duration === 'PT') {
+            $duration .= $seconds . 'S';
+        }
+
+        return $duration;
     }
 
-    if ($seconds > 0 || $duration === 'PT') {
-      $duration .= $seconds . 'S';
+    /**
+     * Format a duration for display.
+     */
+    public function getDuration(int $seconds): string
+    {
+        $parts = [];
+
+        $hours = intdiv($seconds, 3600);
+
+        if ($hours > 0) {
+            $parts[] = sprintf(
+                '%d %s',
+                $hours,
+                $GLOBALS['TL_LANG']['MSC']['podcast_hr'],
+            );
+
+            $seconds %= 3600;
+        }
+
+        $minutes = intdiv($seconds, 60);
+
+        if ($minutes > 0) {
+            $parts[] = sprintf(
+                '%d %s',
+                $minutes,
+                $GLOBALS['TL_LANG']['MSC']['podcast_min'],
+            );
+        }
+
+        return implode(' ', $parts);
     }
 
-    return $duration;
-  }
+    /**
+     * Remove protected channels the current member cannot access.
+     */
+    public function sortOutProtected(array $channels): array
+    {
+        if ([] === $channels) {
+            return [];
+        }
 
-  /**
-   * Format a duration for display.
-   */
-  public static function getDuration(int $seconds): string
-  {
-    $parts = [];
+        $collection = ChannelModel::findMultipleByIds($channels);
 
-    $hours = intdiv($seconds, 3600);
+        if (null === $collection) {
+            return [];
+        }
 
-    if ($hours > 0) {
-      $parts[] = sprintf(
-        '%d %s',
-        $hours,
-        $GLOBALS['TL_LANG']['MSC']['podcast_hr'],
-      );
+        $allowed = [];
 
-      $seconds %= 3600;
+        while ($collection->next()) {
+            if (
+                $collection->protected
+                && !$this->security->isGranted(
+                    ContaoCorePermissions::MEMBER_IN_GROUPS,
+                    StringUtil::deserialize($collection->groups, true),
+                )
+            ) {
+                continue;
+            }
+
+            $allowed[] = $collection->id;
+        }
+
+        return $allowed;
     }
 
-    $minutes = intdiv($seconds, 60);
+    /**
+     * Check whether a channel is protected for the current member.
+     */
+    public function isProtected(int $channelId): bool
+    {
+        $channel = ChannelModel::findByPk($channelId);
 
-    if ($minutes > 0) {
-      $parts[] = sprintf(
-        '%d %s',
-        $minutes,
-        $GLOBALS['TL_LANG']['MSC']['podcast_min'],
-      );
+        if (!$channel instanceof ChannelModel) {
+            return false;
+        }
+
+        if (!$channel->protected) {
+            return false;
+        }
+
+        return !$this->security->isGranted(
+            ContaoCorePermissions::MEMBER_IN_GROUPS,
+            StringUtil::deserialize($channel->groups, true),
+        );
     }
-
-    return implode(' ', $parts);
-  }
-
-  /**
-   * Remove protected channels the current member cannot access.
-   */
-  public static function sortOutProtected(array $channels): array
-  {
-    if ([] === $channels) {
-      return [];
-    }
-
-    $collection = ChannelModel::findMultipleByIds($channels);
-
-    if (null === $collection) {
-      return [];
-    }
-
-    $security = System::getContainer()->get('security.helper');
-
-    $allowed = [];
-
-    while ($collection->next()) {
-      if (
-        $collection->protected
-        && !$security->isGranted(
-          ContaoCorePermissions::MEMBER_IN_GROUPS,
-          StringUtil::deserialize($collection->groups, true),
-        )
-      ) {
-        continue;
-      }
-
-      $allowed[] = $collection->id;
-    }
-
-    return $allowed;
-  }
-
-  /**
-   * Check whether a channel is protected for the current member.
-   */
-  public static function isProtected(int $channelId): bool
-  {
-    $channel = ChannelModel::findByPk($channelId);
-
-    if (!$channel instanceof ChannelModel) {
-      return false;
-    }
-
-    if (!$channel->protected) {
-      return false;
-    }
-
-    $security = System::getContainer()->get('security.helper');
-
-    return !$security->isGranted(
-      ContaoCorePermissions::MEMBER_IN_GROUPS,
-      StringUtil::deserialize($channel->groups, true),
-    );
-  }
 }
