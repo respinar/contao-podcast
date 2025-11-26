@@ -14,11 +14,11 @@ namespace Respinar\PodcastBundle\Controller\FrontendModule;
 
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
+use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\ModuleModel;
 use Contao\Template;
 use Contao\Input;
 use Contao\Pagination;
-use Contao\StringUtil;
 use Contao\Config;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,132 +26,130 @@ use Symfony\Component\HttpFoundation\Response;
 use Respinar\PodcastBundle\Model\EpisodeModel;
 use Respinar\PodcastBundle\Model\ChannelModel;
 
-use Respinar\PodcastBundle;
 use Respinar\PodcastBundle\Classes\PodcastParser;
 use Respinar\PodcastBundle\Classes\PodcastUtil;
 
 #[AsFrontendModule(category: 'podcasts')]
 class PodcastChannelController extends AbstractFrontendModuleController
 {
-	public const TYPE = 'podcast_channel';
+    public const TYPE = 'podcast_channel';
 
-	public function __construct(
-		private readonly PodcastParser $podcastParser,
-	) {}
+    public function __construct(
+        private readonly PodcastParser $podcastParser,
+        private readonly PodcastUtil $podcastUtil,
+    ) {}
 
-	protected function getResponse(Template $template, ModuleModel $model, Request $request): Response
-	{
+    protected function getResponse(Template $template, ModuleModel $model, Request $request): Response
+    {
+        if ($this->podcastUtil->isProtected($model->podcast_channel)) {
+            $template->message = $GLOBALS['TL_LANG']['MSC']['accessError'];
+            return $template->getResponse();
+        }
 
-		if (PodcastUtil::isProtected($model->podcast_channel)) {
-			$template->message = $GLOBALS['TL_LANG']['MSC']['accessError'];
-			return $template->getResponse();
-		}
+        $objChannel = ChannelModel::findOneBy('id', $model->podcast_channel);
 
-		$objChannel = ChannelModel::findOneBy('id', $model->podcast_channel);
+        if (null === $objChannel) {
+            $template->message = $GLOBALS['TL_LANG']['MSC']['notExist'];
+            return $template->getResponse();
+        }
 
-		// No Podcast Channel
-		if (empty($objChannel)) {
-			$template->message = $GLOBALS['TL_LANG']['MSC']['notExist'];
-			return  $template->getResponse();
-		}
+        $pageModel = $this->getPageModel();
 
-		$page = $this->getPageModel();
+        $offset = (int) $model->skipFirst;
+        $limit = null;
 
-		$offset = intval($model->skipFirst);
-		$limit = null;
+        // Maximum number of items
+        if ($model->numberOfItems > 0) {
+            $limit = $model->numberOfItems;
+        }
 
-		// Maximum number of items
-		if ($model->numberOfItems > 0) {
-			$limit = $model->numberOfItems;
-		}
+        // Handle featured product
+        $blnFeatured = match ($model->podcast_featured) {
+            'featured' => true,
+            'unfeatured' => false,
+            default => null,
+        };
 
-		// Handle featured product
-		if ($model->podcast_featured == 'featured') {
-			$blnFeatured = true;
-		} elseif ($model->podcast_featured == 'unfeatured') {
-			$blnFeatured = false;
-		} else {
-			$blnFeatured = null;
-		}
+        $template->episodes = array();
 
-		$template->episodes = array();
+        $intTotal = EpisodeModel::countPublishedByPid($model->podcast_channel, $blnFeatured);
 
-		$intTotal = EpisodeModel::countPublishedByPid($model->podcast_channel, $blnFeatured);
+        if ($intTotal < 1) {
+            $template->message = $GLOBALS['TL_LANG']['MSC']['emptyChannel'];
+            return $template->getResponse();
+        }
 
-		if ($intTotal < 1) {
-			$template->message = $GLOBALS['TL_LANG']['MSC']['emptyChannel'];
-			return $template->getResponse();
-		}
+        $total = $intTotal - $offset;
 
-		$total = $intTotal - $offset;
+        // Split the results
+        if ($model->perPage > 0 && (!isset($limit) || $model->numberOfItems > $model->perPage)) {
+            // Adjust the overall limit
+            if (isset($limit)) {
+                $total = min($limit, $total);
+            }
 
-		// Split the results
-		if ($model->perPage > 0 && (!isset($limit) || $model->numberOfItems > $model->perPage)) {
-			// Adjust the overall limit
-			if (isset($limit)) {
-				$total = min($limit, $total);
-			}
+            // Get the current page
+            $id = 'page_n' . $model->id;
+            $pageNumber = (int) (Input::get($id) ?: 1);
 
-			// Get the current page
-			$id = 'page_n' . $model->id;
-			$page = Input::get($id) ?: 1;
+            // Do not index or cache the page if the page number is outside the range
+            if ($pageNumber < 1 || $pageNumber > max(ceil($total / $model->perPage), 1)) {
+                throw new PageNotFoundException('Page not found');
+            }
 
-			// Do not index or cache the page if the page number is outside the range
-			if ($page < 1 || $page > max(ceil($total / $model->perPage), 1)) {
-				global $objPage;
-				$objPage->noSearch = 1;
-				$objPage->cache = 0;
+            // Set limit and offset
+            $limit = $model->perPage;
+            $offset += (max($pageNumber, 1) - 1) * $model->perPage;
 
-				// Send a 404 header
-				header('HTTP/1.1 404 Not Found');
-				return $template->getResponse();
-			}
+            // Overall limit
+            if ($offset + $limit > $total + (int) $model->skipFirst) {
+                $limit = $total + (int) $model->skipFirst - $offset;
+            }
 
-			// Set limit and offset
-			$limit = $model->perPage;
-			$offset += (max($page, 1) - 1) * $model->perPage;
-			$skip = intval($model->skipFirst);
+            // Add the pagination menu
+            $objPagination = new Pagination($total, $model->perPage, Config::get('maxPaginationLinks'), $id);
+            $template->pagination = $objPagination->generate("\n  ");
+        }
 
-			// Overall limit
-			if ($offset + $limit > $total + $skip) {
-				$limit = $total + $skip - $offset;
-			}
+        $arrOptions = array();
+        $orderParts = array();
 
-			// Add the pagination menu
-			$objPagination = new Pagination($total, $model->perPage, Config::get('maxPaginationLinks'), $id);
-			$template->pagination = $objPagination->generate("\n  ");
-		}
+        // Handle featured_first sorting
+        if ($model->podcast_featured === 'featured_first') {
+            $orderParts[] = "featured DESC";
+        }
 
-		$arrOptions = array();
-		if ($model->podcast_sortBy) {
-			switch ($model->podcast_sortBy) {
-				case 'number_asc':
-					$arrOptions['order'] = "episodeNumber ASC";
-					break;
-				case 'number_desc':
-					$arrOptions['order'] = "episodeNumber DESC";
-					break;
-				case 'date_asc':
-					$arrOptions['order'] = "date ASC";
-					break;
-				case 'date_desc':
-					$arrOptions['order'] = "date DESC";
-					break;
-			}
-		}
+        switch ($model->podcast_sortBy) {
+            case 'number_asc':
+                $orderParts[] = "episodeNumber ASC";
+                break;
+            case 'number_desc':
+                $orderParts[] = "episodeNumber DESC";
+                break;
+            case 'date_asc':
+                $orderParts[] = "date ASC";
+                break;
+            case 'date_desc':
+                $orderParts[] = "date DESC";
+                break;
+            default:
+                $orderParts[] = "date DESC";
+                break;
+        }
 
+        if (!empty($orderParts)) {
+            $arrOptions['order'] = implode(', ', $orderParts);
+        }
 
-		// Get the items
-		if (isset($limit)) {
-			$objEpisodes = EpisodeModel::findPublishedByPid($model->podcast_channel, $blnFeatured, $limit, $offset, $arrOptions);
-		} else {
-			$objEpisodes = EpisodeModel::findPublishedByPid($model->podcast_channel, $blnFeatured, 0, $offset, $arrOptions);
-		}
+        // Get the items
+        if (isset($limit)) {
+            $objEpisodes = EpisodeModel::findPublishedByPid($model->podcast_channel, $blnFeatured, $limit, $offset, $arrOptions);
+        } else {
+            $objEpisodes = EpisodeModel::findPublishedByPid($model->podcast_channel, $blnFeatured, 0, $offset, $arrOptions);
+        }
 
-		//$objEpisodes = EpisodeModel::findBy('pid', $model->podcast_channel);
+        $template->episodes = $this->podcastParser->parseEpisodes($objEpisodes, $model, $pageModel);
 
-		$template->episodes = $this->podcastParser->parseEpisodes($objEpisodes, $model, $page);
-
-		return $template->getResponse();
-	}
+        return $template->getResponse();
+    }
 }
