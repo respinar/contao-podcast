@@ -14,17 +14,18 @@ namespace Respinar\PodcastBundle\Controller\FrontendModule;
 
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
+use Contao\CoreBundle\Exception\PageNotFoundException;
+use Contao\CoreBundle\Routing\ResponseContext\ResponseContextAccessor;
+use Contao\CoreBundle\String\HtmlDecoder;
 use Contao\ModuleModel;
 use Contao\Template;
 use Contao\Input;
-use Contao\System;
+use Contao\StringUtil;
 use Contao\Environment;
 use Contao\PageModel;
-use Contao\StringUtil;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Contao\CoreBundle\Routing\ResponseContext\HtmlHeadBag\HtmlHeadBag;
-use Contao\CoreBundle\Exception\PageNotFoundException;
 
 use Respinar\PodcastBundle\Classes\PodcastParser;
 use Respinar\PodcastBundle\Model\EpisodeModel;
@@ -33,63 +34,65 @@ use Respinar\PodcastBundle\Model\ChannelModel;
 #[AsFrontendModule(category: 'podcasts')]
 class PodcastEpisodeController extends AbstractFrontendModuleController
 {
-	public const TYPE = 'podcast_episode';
+    public const TYPE = 'podcast_episode';
 
-	public function __construct(
-		private readonly PodcastParser $podcastParser,
-	) {}
+    public function __construct(
+        private readonly PodcastParser $podcastParser,
+        private readonly ResponseContextAccessor $responseContextAccessor,
+        private readonly HtmlDecoder $htmlDecoder,
+    ) {}
 
-	protected function getResponse(Template $template, ModuleModel $model, Request $request): Response
-	{
-		$page = $this->getPageModel();
+    protected function getResponse(Template $template, ModuleModel $model, Request $request): Response
+    {
+        $page = $this->getPageModel();
 
-		// Set the item from the auto_item parameter
-		// if (!isset($_GET['items']) && $GLOBALS['TL_CONFIG']['useAutoItem'] && isset($_GET['auto_item']))
-		// {
-		// 	Input::setGet('items', Input::get('auto_item'));
-		// }
+        $model->podcast_channels = StringUtil::deserialize($model->podcast_channels);
+        $objEpisode = EpisodeModel::findPublishedByParentAndIdOrAlias(Input::get('auto_item'), $model->podcast_channels);
 
-		//$objProduct = ProductModel::findOneByAlias(Input::get('items'));
-		$model->podcast_channels = StringUtil::deserialize($model->podcast_channels);
-		$objEpisode = EpisodeModel::findPublishedByParentAndIdOrAlias(Input::get('auto_item'), $model->podcast_channels);
+        // Throw 404 error if episode not found
+        if (!$objEpisode instanceof EpisodeModel) {
+            throw new PageNotFoundException('Page not found: ' . Environment::get('uri'));
+        }
 
-		# Throw 404 error if episode not founded.
-		if (!$objEpisode instanceof EpisodeModel) {
-			throw new PageNotFoundException('Page not found: ' . Environment::get('uri'));
-		}
+        $template->referer = null;
 
-		$template->referer = PageModel::findById($objEpisode->getRelated('pid')->overviewPage)->getFrontendUrl();
+        $channel = $objEpisode->getRelated('pid');
+        if ($channel instanceof ChannelModel) {
+            $overviewPage = PageModel::findById($channel->overviewPage);
+            if ($overviewPage instanceof PageModel) {
+                $template->referer = $overviewPage->getFrontendUrl();
+            }
+        }
 
-		if ($model->overviewPage) {
-			$template->referer = PageModel::findById($model->overviewPage)->getFrontendUrl();
-		}
+        if ($model->overviewPage) {
+            $overviewPage = PageModel::findById($model->overviewPage);
+            if ($overviewPage instanceof PageModel) {
+                $template->referer = $overviewPage->getFrontendUrl();
+            }
+        }
 
-		$template->back = $model->customLabel ?: $GLOBALS['TL_LANG']['MSC']['newsOverview'];
+        $template->back = $model->customLabel ?: ($GLOBALS['TL_LANG']['MSC']['podcastOverview'] ?? $GLOBALS['TL_LANG']['MSC']['newsOverview']);
 
-		//$objPodcast = ChannelModel::findByIdOrAlias($objEpisode->pid);
+        $template->episode = $this->podcastParser->parseEpisode($objEpisode, $model, $page);
 
-		$template->episode = $this->podcastParser->parseEpisode($objEpisode, $model, $page);
+        // Page title and Description
+        $responseContext = $this->responseContextAccessor->getResponseContext();
 
-		// Page title and Description
-		$responseContext = System::getContainer()->get('contao.routing.response_context_accessor')->getResponseContext();
+        if ($responseContext && $responseContext->has(HtmlHeadBag::class)) {
+            /** @var HtmlHeadBag $htmlHeadBag */
+            $htmlHeadBag = $responseContext->get(HtmlHeadBag::class);
 
-		if ($responseContext && $responseContext->has(HtmlHeadBag::class)) {
+            if ($objEpisode->pageTitle) {
+                $htmlHeadBag->setTitle($objEpisode->pageTitle);
+            } elseif ($objEpisode->title) {
+                $htmlHeadBag->setTitle($objEpisode->title);
+            }
 
-			/** @var HtmlHeadBag $htmlHeadBag */
-			$htmlHeadBag = $responseContext->get(HtmlHeadBag::class);
-			$htmlDecoder = System::getContainer()->get('contao.string.html_decoder');
+            if ($objEpisode->description) {
+                $htmlHeadBag->setMetaDescription($this->htmlDecoder->inputEncodedToPlainText($objEpisode->description));
+            }
+        }
 
-			if ($objEpisode->pageTitle) {
-				$htmlHeadBag->setTitle($objEpisode->pageTitle); // Already stored decoded
-			} elseif ($objEpisode->title) {
-				$htmlHeadBag->setTitle($objEpisode->title);
-			}
-
-			if ($objEpisode->description) {
-				$htmlHeadBag->setMetaDescription($htmlDecoder->inputEncodedToPlainText($objEpisode->description));
-			}
-		}
-
-		return $template->getResponse();
-	}
+        return $template->getResponse();
+    }
 }
