@@ -45,7 +45,7 @@ class PreviewUrlCreateListener
             throw new \RuntimeException('The request stack did not contain a request');
         }
 
-        // Return on the product category list page
+        // Return on the episode list page
         if ('tl_podcast_episode' === $request->query->get('table') && !$request->query->has('act')) {
             return;
         }
