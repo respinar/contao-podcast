@@ -18,9 +18,11 @@ use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
 use Contao\ManagerPlugin\Routing\RoutingPluginInterface;
 use Symfony\Component\Config\Loader\LoaderResolverInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 use Contao\CoreBundle\ContaoCoreBundle;
 use Respinar\PodcastBundle\RespinarPodcastBundle;
+use Respinar\PodcastBundle\Controller\FrontendModule\PodcastFeedController;
 
 class Plugin implements BundlePluginInterface, RoutingPluginInterface
 {
@@ -32,12 +34,19 @@ class Plugin implements BundlePluginInterface, RoutingPluginInterface
         ];
     }
 
-    /**
-     * @throws \Exception
-     *
-     * @return RouteCollection|null
-     */
-    public function getRouteCollection(LoaderResolverInterface $resolver, KernelInterface $kernel)
+    public function getRouteCollection(LoaderResolverInterface $resolver, KernelInterface $kernel): ?RouteCollection
     {
+        $collection = new RouteCollection();
+
+        $route = new Route(
+            '/podcast/feed/{alias}',
+            ['_controller' => PodcastFeedController::class . '::__invoke'],
+            ['alias' => '[a-zA-Z0-9_\-]+']
+        );
+        $route->setMethods(['GET']);
+
+        $collection->add('podcast_feed', $route);
+
+        return $collection;
     }
 }
