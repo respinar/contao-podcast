@@ -14,7 +14,7 @@ namespace Respinar\PodcastBundle\EventListener;
 
 use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Event\SitemapEvent;
-use Terminal42\ServiceAnnotationBundle\Annotation\ServiceTag;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
 use Contao\PageModel;
 use Contao\Database;
@@ -22,18 +22,15 @@ use Contao\CoreBundle\Framework\ContaoFramework;
 use Respinar\PodcastBundle\Model\ChannelModel;
 use Respinar\PodcastBundle\Model\EpisodeModel;
 
-/**
- * @ServiceTag("kernel.event_listener", event=ContaoCoreEvents::SITEMAP)
- */
+#[AsEventListener(event: ContaoCoreEvents::SITEMAP)]
 class SitemapListener
 {
-	public function __construct(private readonly ContaoFramework $framework)
+    public function __construct(private readonly ContaoFramework $framework)
     {
     }
 
     public function __invoke(SitemapEvent $event): void
     {
-
         $arrRoot = $this->framework->createInstance(Database::class)->getChildRecords($event->getRootPageIds(), 'tl_page');
 
         // Early return here in the unlikely case that there are no pages
@@ -41,33 +38,32 @@ class SitemapListener
             return;
         }
 
-		$arrPages = [];
+        $arrPages = [];
         $time = time();
 
-		// Get all catalog categories
-		$objChannels = $this->framework->getAdapter(ChannelModel::class)->findByProtected('');
-		//ProductCatalogModel::findByProtected('');
+        // Get all podcast channels
+        $objChannels = $this->framework->getAdapter(ChannelModel::class)->findByProtected('');
 
-		if (null === $objChannels) {
+        if (null === $objChannels) {
             return;
         }
 
-		// Walk through each catalog
-		foreach ($objChannels as $objChannel)
-		{
-			// Skip catalog without target page
-			if (!$objChannel->jumpTo) {
-				continue;
-			}
+        // Walk through each channel
+        foreach ($objChannels as $objChannel)
+        {
+            // Skip channel without target page
+            if (!$objChannel->jumpTo) {
+                continue;
+            }
 
-			// Skip catalog categories outside the root nodes
-			if (!\in_array($objChannel->jumpTo, $arrRoot, false)) {
-				continue;
-			}
+            // Skip channel categories outside the root nodes
+            if (!\in_array($objChannel->jumpTo, $arrRoot, false)) {
+                continue;
+            }
 
-			$objParent = $this->framework->getAdapter(PageModel::class)->findWithDetails($objChannel->jumpTo);
+            $objParent = $this->framework->getAdapter(PageModel::class)->findWithDetails($objChannel->jumpTo);
 
-			// The target page does not exist
+            // The target page does not exist
             if (null === $objParent) {
                 continue;
             }
@@ -87,34 +83,27 @@ class SitemapListener
                 continue;
             }
 
-			// Get the items
+            // Get the items
             $objEpisodes = $this->framework->getAdapter(EpisodeModel::class)->findPublishedDefaultByPid($objChannel->id);
 
-			if (null === $objEpisodes) {
+            if (null === $objEpisodes) {
                 continue;
             }
 
-			foreach ($objEpisodes as $objEpisode) {
-                // if ('noindex,nofollow' === $objNews->robots) {
-                //     continue;
-                // }
-
+            foreach ($objEpisodes as $objEpisode) {
                 $arrPages[] = $objParent->getAbsoluteUrl('/'.($objEpisode->alias ?: $objEpisode->id));
             }
-
-		}
-
-		$sitemap = $event->getDocument();
-
-		foreach ($arrPages as $strUrl) {
-
-			$urlSet = $sitemap->childNodes[0];
-
-			$loc = $sitemap->createElement('loc', $strUrl);
-			$urlEl = $sitemap->createElement('url');
-			$urlEl->appendChild($loc);
-			$urlSet->appendChild($urlEl);
         }
 
+        $sitemap = $event->getDocument();
+
+        foreach ($arrPages as $strUrl) {
+            $urlSet = $sitemap->childNodes[0];
+
+            $loc = $sitemap->createElement('loc', $strUrl);
+            $urlEl = $sitemap->createElement('url');
+            $urlEl->appendChild($loc);
+            $urlSet->appendChild($urlEl);
+        }
     }
 }
