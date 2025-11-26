@@ -19,8 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Respinar\PodcastBundle\Model\EpisodeModel;
 
-use Respinar\PodcastBundle\Podcast;
-use Spatie\SchemaOrg\Episode;
+
 
 #[AsEventListener('contao.preview_url_convert')]
 class PreviewUrlConvertListener
@@ -41,7 +40,9 @@ class PreviewUrlConvertListener
             return;
         }
 
-        if (!($podcast = $this->getPodcastModel($event->getRequest())) instanceof EpisodeModel) {
+        $podcast = $this->getPodcastModel($event->getRequest());
+
+        if (!$podcast instanceof EpisodeModel) {
             return;
         }
 
