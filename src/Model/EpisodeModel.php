@@ -66,9 +66,9 @@ class EpisodeModel extends Model
 	}
 
 	/**
-	 * Count published product items by their parent ID
+	 * Count published episodes by their parent ID
 	 */
-	public static function countPublishedByPid(int $pid, bool $blnFeatured=null, array $arrOptions=array()): int
+	public static function countPublishedByPid(int $pid, ?bool $blnFeatured = null, array $arrOptions = []): int
 	{
 		if ($pid === 0)
 		{
@@ -89,7 +89,7 @@ class EpisodeModel extends Model
 
 		if (!static::isPreviewMode($arrOptions))
 		{
-			$time = time();
+			$time = Date::floorToMinute();
 			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
 		}
 
@@ -97,9 +97,9 @@ class EpisodeModel extends Model
 	}
 
 	/**
-	 * Find published product items by their parent ID
+	 * Find published episodes by their parent ID
 	 */
-	public static function findPublishedByPid(int $pid, $blnFeatured=null, int $intLimit=0, int $intOffset=0, array $arrOptions=array()): Collection|EpisodeModel|null
+	public static function findPublishedByPid(int $pid, ?bool $blnFeatured = null, int $intLimit = 0, int $intOffset = 0, array $arrOptions = []): Collection|EpisodeModel|null
 	{
 		if ($pid === 0)
 		{
@@ -121,7 +121,7 @@ class EpisodeModel extends Model
 		// Never return unpublished elements in the back end, so they don't end up in the RSS feed
 		if (!static::isPreviewMode($arrOptions))
 		{
-			$time = time();
+			$time = Date::floorToMinute();
 			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
 		}
 
