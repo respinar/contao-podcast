@@ -17,7 +17,7 @@ use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
 use Contao\ManagerPlugin\Bundle\Parser\DelegatingParser;
 use Contao\TestCase\ContaoTestCase;
 use Respinar\PodcastBundle\ContaoManager\Plugin;
-use Respinar\PodcastBundle\RespinarContaoPodcastBundle;
+use Respinar\PodcastBundle\RespinarPodcastBundle;
 
 /**
  * @package Respinar\PodcastBundle\Tests\ContaoManager
@@ -44,7 +44,7 @@ class PluginTest extends ContaoTestCase
 
         $this->assertCount(1, $bundles);
         $this->assertInstanceOf(BundleConfig::class, $bundles[0]);
-        $this->assertSame(RespinarContaoPodcastBundle::class, $bundles[0]->getName());
+        $this->assertSame(RespinarPodcastBundle::class, $bundles[0]->getName());
         $this->assertSame([ContaoCoreBundle::class], $bundles[0]->getLoadAfter());
     }
 
