@@ -13,7 +13,7 @@ declare(strict_types=1);
 use Contao\Controller;
 use Respinar\PodcastBundle\Controller\ContentElement\PodcastController;
 
-/**
+/*
  * Content elements
  */
 $GLOBALS['TL_DCA']['tl_content']['palettes'][PodcastController::TYPE] = '
@@ -27,25 +27,23 @@ $GLOBALS['TL_DCA']['tl_content']['palettes'][PodcastController::TYPE] = '
 
 // Add fields to tl_content
 $GLOBALS['TL_DCA']['tl_content']['fields']['podcast_episode'] = [
-	'inputType' => 'select',
-	'foreignKey' => 'tl_podcast_episode.title',
-	'eval' => ['multiple' => false, 'foreignTable' => 'tl_podcast_episode', 'chosen' => true, 'mandatory' => true, 'tl_class' => 'w50'],
-	'sql' => "int(10) unsigned NULL"
+    'inputType' => 'select',
+    'foreignKey' => 'tl_podcast_episode.title',
+    'eval' => ['multiple' => false, 'foreignTable' => 'tl_podcast_episode', 'chosen' => true, 'mandatory' => true, 'tl_class' => 'w50'],
+    'sql' => 'int(10) unsigned NULL',
 ];
 
 $GLOBALS['TL_DCA']['tl_content']['fields']['podcast_metaFields'] = [
-	'inputType' => 'checkbox',
-	'options' => ['date', 'author', 'comments'],
-	'reference' => &$GLOBALS['TL_LANG']['MSC'],
-	'eval' => ['multiple' => true],
-	'sql' => "varchar(255) COLLATE ascii_bin NOT NULL default 'a:2:{i:0;s:4:\"date\";i:1;s:6:\"author\";}'"
+    'inputType' => 'checkbox',
+    'options' => ['date', 'author', 'comments'],
+    'reference' => &$GLOBALS['TL_LANG']['MSC'],
+    'eval' => ['multiple' => true],
+    'sql' => "varchar(255) COLLATE ascii_bin NOT NULL default 'a:2:{i:0;s:4:\"date\";i:1;s:6:\"author\";}'",
 ];
 
 $GLOBALS['TL_DCA']['tl_content']['fields']['podcast_template'] = [
-	'inputType' => 'select',
-	'options_callback' => static function () {
-		return Controller::getTemplateGroup('podcast_');
-	},
-	'eval' => ['includeBlankOption' => true, 'chosen' => true, 'tl_class' => 'w50'],
-	'sql' => "varchar(64) COLLATE ascii_bin NOT NULL default ''"
+    'inputType' => 'select',
+    'options_callback' => static fn () => Controller::getTemplateGroup('podcast_'),
+    'eval' => ['includeBlankOption' => true, 'chosen' => true, 'tl_class' => 'w50'],
+    'sql' => "varchar(64) COLLATE ascii_bin NOT NULL default ''",
 ];
