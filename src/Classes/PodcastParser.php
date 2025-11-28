@@ -16,16 +16,16 @@ use Contao\ContentModel;
 use Contao\CoreBundle\Image\Studio\Figure;
 use Contao\CoreBundle\Image\Studio\Studio;
 use Contao\CoreBundle\Routing\ContentUrlGenerator;
+use Contao\CoreBundle\Util\LocaleUtil;
 use Contao\Date;
 use Contao\File;
 use Contao\FilesModel;
+use Contao\FrontendTemplate;
 use Contao\Model\Collection;
 use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\UserModel;
-use Contao\CoreBundle\Util\LocaleUtil;
-use Contao\FrontendTemplate;
 use Respinar\PodcastBundle\Model\EpisodeModel;
 
 final readonly class PodcastParser
@@ -35,9 +35,10 @@ final readonly class PodcastParser
         private PodcastSchema $schema,
         private ContentUrlGenerator $contentUrlGenerator,
         private PodcastUtil $podcastUtil,
-    ) {}
+    ) {
+    }
 
-    public function parseEpisode(EpisodeModel $episode, ModuleModel|ContentModel $model, PageModel $page,): string
+    public function parseEpisode(EpisodeModel $episode, ContentModel|ModuleModel $model, PageModel $page): string
     {
         $template = new FrontendTemplate($model->podcast_template);
 
@@ -50,7 +51,7 @@ final readonly class PodcastParser
         $template->duration = $this->podcastUtil->getDuration((int) $episode->duration);
 
         if (($author = $episode->getRelated('author')) instanceof UserModel) {
-            $template->author = $GLOBALS['TL_LANG']['MSC']['by'] . ' ' . $author->name;
+            $template->author = $GLOBALS['TL_LANG']['MSC']['by'].' '.$author->name;
             $template->authorModel = $author;
         }
 
@@ -65,25 +66,19 @@ final readonly class PodcastParser
         return $template->parse();
     }
 
-    public function parseEpisodes(
-        Collection $episodes,
-        ModuleModel|ContentModel $model,
-        PageModel $page,
-    ): array {
+    public function parseEpisodes(Collection $episodes, ContentModel|ModuleModel $model, PageModel $page,): array
+    {
         $items = [];
 
         foreach ($episodes as $episode) {
-            $items[] = $this->parseEpisode($episode, $model, $page,);
+            $items[] = $this->parseEpisode($episode, $model, $page);
         }
 
         return $items;
     }
 
-    private function addFigure(
-        FrontendTemplate $template,
-        EpisodeModel $episode,
-        ModuleModel|ContentModel $model,
-    ): void {
+    private function addFigure(FrontendTemplate $template, EpisodeModel $episode, ContentModel|ModuleModel $model,): void
+    {
         if (!$episode->coverSRC) {
             return;
         }
@@ -107,14 +102,15 @@ final readonly class PodcastParser
             ->createFigureBuilder()
             ->from($episode->coverSRC)
             ->setSize($size)
-            ->buildIfResourceExists();
+            ->buildIfResourceExists()
+        ;
 
         if ($figure instanceof Figure) {
             $template->figure = $figure;
         }
     }
 
-    private function addAudio(FrontendTemplate $template, EpisodeModel $episode, PageModel $page,): ?string
+    private function addAudio(FrontendTemplate $template, EpisodeModel $episode, PageModel $page): string|null
     {
         if (!$episode->podcastSRC) {
             return null;
@@ -130,24 +126,24 @@ final readonly class PodcastParser
 
         $meta = $fileModel->getMetadata($locale);
 
-        		$file = new File($fileModel->path);
+        $file = new File($fileModel->path);
 
-        		$file->title = StringUtil::specialchars(
-        			$meta?->getTitle() ?: $file->name
-        		);
+        $file->title = StringUtil::specialchars(
+            $meta?->getTitle() ?: $file->name,
+        );
 
-        		$template->file = [
-        			'name' => $file->name,
-        			'path' => $file->path,
-        			'mime' => $file->mime,
-        			'title' => $file->title,
-        			'extension' => $file->extension,
-        		];
+        $template->file = [
+            'name' => $file->name,
+            'path' => $file->path,
+            'mime' => $file->mime,
+            'title' => $file->title,
+            'extension' => $file->extension,
+        ];
 
-        		if ($meta !== null) {
-        			$template->caption = $meta->getCaption();
-        		}
+        if (null !== $meta) {
+            $template->caption = $meta->getCaption();
+        }
 
-        		return '/' . $file->path;
+        return '/'.$file->path;
     }
 }
