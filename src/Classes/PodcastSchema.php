@@ -12,9 +12,7 @@ declare(strict_types=1);
 
 namespace Respinar\PodcastBundle\Classes;
 
-use Contao\ContentModel;
 use Contao\CoreBundle\Routing\ContentUrlGenerator;
-use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\UserModel;
@@ -26,15 +24,14 @@ final readonly class PodcastSchema
     public function __construct(
         private ContentUrlGenerator $contentUrlGenerator,
         private PodcastUtil $podcastUtil,
-    ) {}
+    ) {
+    }
 
-    public function generate(
-        EpisodeModel $episode,
-        ?string $mediaUrl = null,
-    ): array {
+    public function generate(EpisodeModel $episode, string|null $mediaUrl = null,): array
+    {
         $jsonLd = [
             '@type' => 'PodcastEpisode',
-            'identifier' => '#/schema/podcastepisode/' . $episode->id,
+            'identifier' => '#/schema/podcastepisode/'.$episode->id,
             'url' => $this->contentUrlGenerator->generate($episode, [], UrlGeneratorInterface::ABSOLUTE_URL),
             'name' => $episode->title,
             'datePublished' => date('Y-m-d', (int) $episode->date),
@@ -59,7 +56,7 @@ final readonly class PodcastSchema
             ];
         }
 
-        if ($mediaUrl !== null) {
+        if (null !== $mediaUrl) {
             $jsonLd['associatedMedia']['contentUrl'] = $mediaUrl;
         }
 
