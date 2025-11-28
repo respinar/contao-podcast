@@ -13,17 +13,14 @@ declare(strict_types=1);
 namespace Respinar\PodcastBundle\Classes;
 
 use Contao\CoreBundle\Security\ContaoCorePermissions;
-use Contao\PageModel;
 use Contao\StringUtil;
 use Respinar\PodcastBundle\Model\ChannelModel;
-use Respinar\PodcastBundle\Model\EpisodeModel;
 use Symfony\Bundle\SecurityBundle\Security;
 
 final class PodcastUtil
 {
-    public function __construct(
-        private readonly Security $security,
-    ) {
+    public function __construct(private readonly Security $security)
+    {
     }
 
     /**
@@ -40,15 +37,15 @@ final class PodcastUtil
         $duration = 'PT';
 
         if ($hours > 0) {
-            $duration .= $hours . 'H';
+            $duration .= $hours.'H';
         }
 
         if ($minutes > 0) {
-            $duration .= $minutes . 'M';
+            $duration .= $minutes.'M';
         }
 
-        if ($seconds > 0 || $duration === 'PT') {
-            $duration .= $seconds . 'S';
+        if ($seconds > 0 || 'PT' === $duration) {
+            $duration .= $seconds.'S';
         }
 
         return $duration;
@@ -64,7 +61,7 @@ final class PodcastUtil
         $hours = intdiv($seconds, 3600);
 
         if ($hours > 0) {
-            $parts[] = sprintf(
+            $parts[] = \sprintf(
                 '%d %s',
                 $hours,
                 $GLOBALS['TL_LANG']['MSC']['podcast_hr'],
@@ -76,7 +73,7 @@ final class PodcastUtil
         $minutes = intdiv($seconds, 60);
 
         if ($minutes > 0) {
-            $parts[] = sprintf(
+            $parts[] = \sprintf(
                 '%d %s',
                 $minutes,
                 $GLOBALS['TL_LANG']['MSC']['podcast_min'],
@@ -125,7 +122,7 @@ final class PodcastUtil
      */
     public function isProtected(int $channelId): bool
     {
-        $channel = ChannelModel::findByPk($channelId);
+        $channel = ChannelModel::findById($channelId);
 
         if (!$channel instanceof ChannelModel) {
             return false;
