@@ -13,14 +13,14 @@ declare(strict_types=1);
 use Respinar\PodcastBundle\Model\ChannelModel;
 use Respinar\PodcastBundle\Model\EpisodeModel;
 
-/**
+/*
  * Backend modules
  */
-$GLOBALS['BE_MOD']['content']['podcasts'] = array(
-    'tables' => array('tl_podcast_channel', 'tl_podcast_episode')
-);
+$GLOBALS['BE_MOD']['content']['podcasts'] = [
+    'tables' => ['tl_podcast_channel', 'tl_podcast_episode'],
+];
 
-/**
+/*
  * Models
  */
 $GLOBALS['TL_MODELS']['tl_podcast_channel'] = ChannelModel::class;
