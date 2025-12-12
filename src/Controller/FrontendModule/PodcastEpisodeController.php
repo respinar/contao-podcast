@@ -15,21 +15,20 @@ namespace Respinar\PodcastBundle\Controller\FrontendModule;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\CoreBundle\Exception\PageNotFoundException;
+use Contao\CoreBundle\Routing\ResponseContext\HtmlHeadBag\HtmlHeadBag;
 use Contao\CoreBundle\Routing\ResponseContext\ResponseContextAccessor;
 use Contao\CoreBundle\String\HtmlDecoder;
-use Contao\ModuleModel;
-use Contao\Template;
-use Contao\Input;
-use Contao\StringUtil;
 use Contao\Environment;
+use Contao\Input;
+use Contao\ModuleModel;
 use Contao\PageModel;
+use Contao\StringUtil;
+use Contao\Template;
+use Respinar\PodcastBundle\Classes\PodcastParser;
+use Respinar\PodcastBundle\Model\ChannelModel;
+use Respinar\PodcastBundle\Model\EpisodeModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Contao\CoreBundle\Routing\ResponseContext\HtmlHeadBag\HtmlHeadBag;
-
-use Respinar\PodcastBundle\Classes\PodcastParser;
-use Respinar\PodcastBundle\Model\EpisodeModel;
-use Respinar\PodcastBundle\Model\ChannelModel;
 
 #[AsFrontendModule(category: 'podcasts')]
 class PodcastEpisodeController extends AbstractFrontendModuleController
@@ -40,7 +39,8 @@ class PodcastEpisodeController extends AbstractFrontendModuleController
         private readonly PodcastParser $podcastParser,
         private readonly ResponseContextAccessor $responseContextAccessor,
         private readonly HtmlDecoder $htmlDecoder,
-    ) {}
+    ) {
+    }
 
     protected function getResponse(Template $template, ModuleModel $model, Request $request): Response
     {
@@ -51,7 +51,7 @@ class PodcastEpisodeController extends AbstractFrontendModuleController
 
         // Throw 404 error if episode not found
         if (!$objEpisode instanceof EpisodeModel) {
-            throw new PageNotFoundException('Page not found: ' . Environment::get('uri'));
+            throw new PageNotFoundException('Page not found: '.Environment::get('uri'));
         }
 
         $template->referer = null;
