@@ -12,17 +12,17 @@ declare(strict_types=1);
 
 namespace Respinar\PodcastBundle\ContaoManager;
 
+use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\ManagerPlugin\Bundle\BundlePluginInterface;
 use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
 use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
 use Contao\ManagerPlugin\Routing\RoutingPluginInterface;
+use Respinar\PodcastBundle\Controller\FrontendModule\PodcastFeedController;
+use Respinar\PodcastBundle\RespinarPodcastBundle;
 use Symfony\Component\Config\Loader\LoaderResolverInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
-use Contao\CoreBundle\ContaoCoreBundle;
-use Respinar\PodcastBundle\RespinarPodcastBundle;
-use Respinar\PodcastBundle\Controller\FrontendModule\PodcastFeedController;
 
 class Plugin implements BundlePluginInterface, RoutingPluginInterface
 {
@@ -34,14 +34,14 @@ class Plugin implements BundlePluginInterface, RoutingPluginInterface
         ];
     }
 
-    public function getRouteCollection(LoaderResolverInterface $resolver, KernelInterface $kernel): ?RouteCollection
+    public function getRouteCollection(LoaderResolverInterface $resolver, KernelInterface $kernel): RouteCollection|null
     {
         $collection = new RouteCollection();
 
         $route = new Route(
             '/podcast/feed/{alias}',
-            ['_controller' => PodcastFeedController::class . '::__invoke'],
-            ['alias' => '[a-zA-Z0-9_\-]+']
+            ['_controller' => PodcastFeedController::class.'::__invoke'],
+            ['alias' => '[a-zA-Z0-9_\-]+'],
         );
         $route->setMethods(['GET']);
 
