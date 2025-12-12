@@ -12,22 +12,20 @@ declare(strict_types=1);
 
 namespace Respinar\PodcastBundle\Controller\FrontendModule;
 
+use Contao\Config;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\CoreBundle\Exception\PageNotFoundException;
-use Contao\ModuleModel;
-use Contao\Template;
 use Contao\Input;
+use Contao\ModuleModel;
 use Contao\Pagination;
-use Contao\Config;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-
-use Respinar\PodcastBundle\Model\EpisodeModel;
-use Respinar\PodcastBundle\Model\ChannelModel;
-
+use Contao\Template;
 use Respinar\PodcastBundle\Classes\PodcastParser;
 use Respinar\PodcastBundle\Classes\PodcastUtil;
+use Respinar\PodcastBundle\Model\ChannelModel;
+use Respinar\PodcastBundle\Model\EpisodeModel;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 #[AsFrontendModule(category: 'podcasts')]
 class PodcastChannelController extends AbstractFrontendModuleController
@@ -37,12 +35,14 @@ class PodcastChannelController extends AbstractFrontendModuleController
     public function __construct(
         private readonly PodcastParser $podcastParser,
         private readonly PodcastUtil $podcastUtil,
-    ) {}
+    ) {
+    }
 
     protected function getResponse(Template $template, ModuleModel $model, Request $request): Response
     {
         if ($this->podcastUtil->isProtected($model->podcast_channel)) {
             $template->message = $GLOBALS['TL_LANG']['MSC']['accessError'];
+
             return $template->getResponse();
         }
 
@@ -50,6 +50,7 @@ class PodcastChannelController extends AbstractFrontendModuleController
 
         if (null === $objChannel) {
             $template->message = $GLOBALS['TL_LANG']['MSC']['notExist'];
+
             return $template->getResponse();
         }
 
@@ -70,12 +71,13 @@ class PodcastChannelController extends AbstractFrontendModuleController
             default => null,
         };
 
-        $template->episodes = array();
+        $template->episodes = [];
 
         $intTotal = EpisodeModel::countPublishedByPid($model->podcast_channel, $blnFeatured);
 
         if ($intTotal < 1) {
             $template->message = $GLOBALS['TL_LANG']['MSC']['emptyChannel'];
+
             return $template->getResponse();
         }
 
@@ -89,7 +91,7 @@ class PodcastChannelController extends AbstractFrontendModuleController
             }
 
             // Get the current page
-            $id = 'page_n' . $model->id;
+            $id = 'page_n'.$model->id;
             $pageNumber = (int) (Input::get($id) ?: 1);
 
             // Do not index or cache the page if the page number is outside the range
@@ -111,29 +113,29 @@ class PodcastChannelController extends AbstractFrontendModuleController
             $template->pagination = $objPagination->generate("\n  ");
         }
 
-        $arrOptions = array();
-        $orderParts = array();
+        $arrOptions = [];
+        $orderParts = [];
 
         // Handle featured_first sorting
-        if ($model->podcast_featured === 'featured_first') {
-            $orderParts[] = "featured DESC";
+        if ('featured_first' === $model->podcast_featured) {
+            $orderParts[] = 'featured DESC';
         }
 
         switch ($model->podcast_sortBy) {
             case 'number_asc':
-                $orderParts[] = "episodeNumber ASC";
+                $orderParts[] = 'episodeNumber ASC';
                 break;
             case 'number_desc':
-                $orderParts[] = "episodeNumber DESC";
+                $orderParts[] = 'episodeNumber DESC';
                 break;
             case 'date_asc':
-                $orderParts[] = "date ASC";
+                $orderParts[] = 'date ASC';
                 break;
             case 'date_desc':
-                $orderParts[] = "date DESC";
+                $orderParts[] = 'date DESC';
                 break;
             default:
-                $orderParts[] = "date DESC";
+                $orderParts[] = 'date DESC';
                 break;
         }
 
