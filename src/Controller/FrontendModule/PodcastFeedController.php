@@ -54,7 +54,7 @@ class PodcastFeedController
             null,
             (int) $channel->maxItems,
             0,
-            ['order' => 'date DESC']
+            ['order' => 'date DESC'],
         );
 
         $baseUrl = rtrim($channel->feedBase ?: $request->getSchemeAndHttpHost(), '/');
@@ -92,14 +92,14 @@ class PodcastFeedController
         if ($channel->coverSRC) {
             $fileModel = FilesModel::findByUuid($channel->coverSRC);
             if ($fileModel instanceof FilesModel) {
-                $imageUrl = $baseUrl . '/' . $fileModel->path;
+                $imageUrl = $baseUrl.'/'.$fileModel->path;
                 $imageEl = $xml->createElement('itunes:image');
                 $imageEl->setAttribute('href', $imageUrl);
                 $channelEl->appendChild($imageEl);
             }
         }
 
-        if ($episodes !== null) {
+        if (null !== $episodes) {
             foreach ($episodes as $episode) {
                 $itemEl = $xml->createElement('item');
 
@@ -131,11 +131,11 @@ class PodcastFeedController
                 if ($episode->podcastSRC) {
                     $fileModel = FilesModel::findByUuid($episode->podcastSRC);
                     if ($fileModel instanceof FilesModel) {
-                        $filePath = $this->projectDir . '/' . $fileModel->path;
+                        $filePath = $this->projectDir.'/'.$fileModel->path;
 
                         if (file_exists($filePath)) {
                             $enclosure = $xml->createElement('enclosure');
-                            $enclosure->setAttribute('url', $baseUrl . '/' . $fileModel->path);
+                            $enclosure->setAttribute('url', $baseUrl.'/'.$fileModel->path);
                             $enclosure->setAttribute('length', (string) filesize($filePath));
 
                             $ext = strtolower(pathinfo($fileModel->path, PATHINFO_EXTENSION));
