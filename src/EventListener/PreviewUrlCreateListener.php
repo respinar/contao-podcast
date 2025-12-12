@@ -13,10 +13,9 @@ declare(strict_types=1);
 namespace Respinar\PodcastBundle\EventListener;
 
 use Contao\CoreBundle\Event\PreviewUrlCreateEvent;
-use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
-
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Respinar\PodcastBundle\Model\EpisodeModel;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -24,6 +23,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class PreviewUrlCreateListener
 {
     private RequestStack $requestStack;
+
     private ContaoFramework $framework;
 
     public function __construct(RequestStack $requestStack, ContaoFramework $framework)
@@ -60,7 +60,7 @@ class PreviewUrlCreateListener
     /**
      * @return int|string
      */
-    private function getId(PreviewUrlCreateEvent $event, Request $request): string|int|float|bool|null
+    private function getId(PreviewUrlCreateEvent $event, Request $request): bool|float|int|string|null
     {
         // Overwrite the ID if the podcast settings are edited
         if ('tl_podcast_episode' === $request->query->get('table') && 'edit' === $request->query->get('act')) {
@@ -73,8 +73,8 @@ class PreviewUrlCreateListener
     /**
      * @param int|string $id
      */
-    private function getPodcastModel($id): ?EpisodeModel
+    private function getPodcastModel($id): EpisodeModel|null
     {
-        return $this->framework->getAdapter(EpisodeModel::class)->findByPk($id);
+        return $this->framework->getAdapter(EpisodeModel::class)->findById($id);
     }
 }
