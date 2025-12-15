@@ -19,13 +19,10 @@ use Contao\TestCase\ContaoTestCase;
 use Respinar\PodcastBundle\ContaoManager\Plugin;
 use Respinar\PodcastBundle\RespinarPodcastBundle;
 
-/**
- * @package Respinar\PodcastBundle\Tests\ContaoManager
- */
 class PluginTest extends ContaoTestCase
 {
     /**
-     * Test Contao manager plugin class instantiation
+     * Test Contao manager plugin class instantiation.
      */
     public function testInstantiation(): void
     {
@@ -33,7 +30,7 @@ class PluginTest extends ContaoTestCase
     }
 
     /**
-     * Test returns the bundles
+     * Test returns the bundles.
      */
     public function testGetBundles(): void
     {
@@ -47,5 +44,4 @@ class PluginTest extends ContaoTestCase
         $this->assertSame(RespinarPodcastBundle::class, $bundles[0]->getName());
         $this->assertSame([ContaoCoreBundle::class], $bundles[0]->getLoadAfter());
     }
-
 }
