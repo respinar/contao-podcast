@@ -13,12 +13,11 @@ use Respinar\PodcastBundle\Model\EpisodeModel;
 
 class PodcastResolver implements ContentUrlResolverInterface
 {
-    public function __construct(
-        private readonly ContaoFramework $framework,
-    ) {
+    public function __construct(private readonly ContaoFramework $framework)
+    {
     }
 
-    public function resolve(object $content): ?ContentUrlResult
+    public function resolve(object $content): ContentUrlResult|null
     {
         if (!$content instanceof EpisodeModel) {
             return null;
@@ -34,7 +33,7 @@ class PodcastResolver implements ContentUrlResolverInterface
         }
 
         return ContentUrlResult::resolve(
-            $pageAdapter->findPublishedById((int) $channel->jumpTo)
+            $pageAdapter->findPublishedById((int) $channel->jumpTo),
         );
     }
 
