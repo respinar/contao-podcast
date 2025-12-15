@@ -14,13 +14,12 @@ namespace Respinar\PodcastBundle\EventListener;
 
 use Contao\CoreBundle\Event\ContaoCoreEvents;
 use Contao\CoreBundle\Event\SitemapEvent;
-use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
-
-use Contao\PageModel;
-use Contao\Database;
 use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\Database;
+use Contao\PageModel;
 use Respinar\PodcastBundle\Model\ChannelModel;
 use Respinar\PodcastBundle\Model\EpisodeModel;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
 #[AsEventListener(event: ContaoCoreEvents::SITEMAP)]
 class SitemapListener
@@ -49,8 +48,7 @@ class SitemapListener
         }
 
         // Walk through each channel
-        foreach ($objChannels as $objChannel)
-        {
+        foreach ($objChannels as $objChannel) {
             // Skip channel without target page
             if (!$objChannel->jumpTo) {
                 continue;
