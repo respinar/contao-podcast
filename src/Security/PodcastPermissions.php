@@ -14,11 +14,15 @@ namespace Respinar\PodcastBundle\Security;
 
 final class PodcastPermissions
 {
-    public const string USER_CAN_EDIT_ARCHIVE    = 'contao_user.podcasts';
+    public const string USER_CAN_EDIT_ARCHIVE = 'contao_user.podcasts';
+
     public const string USER_CAN_CREATE_ARCHIVES = 'contao_user.podcastp.create';
+
     public const string USER_CAN_DELETE_ARCHIVES = 'contao_user.podcastp.delete';
 
-    public const string USER_CAN_EDIT_FEED    = 'contao_user.podcastfeeds';
+    public const string USER_CAN_EDIT_FEED = 'contao_user.podcastfeeds';
+
     public const string USER_CAN_CREATE_FEEDS = 'contao_user.podcastfeedp.create';
+
     public const string USER_CAN_DELETE_FEEDS = 'contao_user.podcastfeedp.delete';
 }
