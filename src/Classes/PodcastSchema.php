@@ -27,7 +27,7 @@ final readonly class PodcastSchema
     ) {
     }
 
-    public function generate(EpisodeModel $episode, string|null $mediaUrl = null,): array
+    public function generate(EpisodeModel $episode, string|null $mediaUrl = null): array
     {
         $jsonLd = [
             '@type' => 'PodcastEpisode',
