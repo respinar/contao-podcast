@@ -73,7 +73,7 @@ class PreviewUrlCreateListener
     /**
      * @param int|string $id
      */
-    private function getPodcastModel($id): EpisodeModel|null
+    private function getPodcastModel(bool|float|int|string $id): EpisodeModel|null
     {
         return $this->framework->getAdapter(EpisodeModel::class)->findById($id);
     }
