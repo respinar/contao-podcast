@@ -33,7 +33,7 @@ class PodcastController extends AbstractContentElementController
     ) {
     }
 
-    protected function getResponse(Template $template, ContentModel $model, Request $request,): Response
+    protected function getResponse(Template $template, ContentModel $model, Request $request): Response
     {
         if ($this->scopeMatcher->isBackendRequest($request)) {
             return $template->getResponse();
