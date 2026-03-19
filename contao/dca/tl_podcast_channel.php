@@ -10,12 +10,10 @@ declare(strict_types=1);
  * @license MIT
  */
 
-use Contao\Backend;
 use Contao\BackendUser;
 use Contao\CoreBundle\Util\LocaleUtil;
 use Contao\DataContainer;
 use Contao\DC_Table;
-use Contao\StringUtil;
 
 /*
  * Table tl_podcast_channel
@@ -194,23 +192,3 @@ $GLOBALS['TL_DCA']['tl_podcast_channel'] = [
         ],
     ],
 ];
-
-/**
- * Provide miscellaneous methods that are used by the data configuration array.
- */
-class tl_podcast_channel extends Backend
-{
-    /**
-     * Import the back end user object.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        $this->import(BackendUser::class, 'User');
-    }
-
-    public function manageFeeds($href, $label, $title, $class, $attributes): string
-    {
-        return '<a href="'.$this->addToUrl($href).'" class="'.$class.'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.$label.'</a> ';
-    }
-}
