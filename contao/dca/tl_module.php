@@ -37,14 +37,14 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['podcast_channel'] = [
     'inputType' => 'radio',
     'foreignKey' => 'tl_podcast_channel.title',
     'eval' => ['multiple' => false, 'foreignTable' => 'tl_podcast_channel', 'mandatory' => true],
-    'sql' => 'int(10) unsigned NULL',
+    'sql' => ['type' => 'integer', 'unsigned' => true, 'notnull' => false],
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['podcast_channels'] = [
     'inputType' => 'checkbox',
     'foreignKey' => 'tl_podcast_channel.title',
     'eval' => ['multiple' => true, 'foreignTable' => 'tl_podcast_channel', 'mandatory' => true],
-    'sql' => 'blob NULL',
+    'sql' => ['type' => 'blob', 'notnull' => false],
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['podcast_featured'] = [
@@ -52,20 +52,20 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['podcast_featured'] = [
     'options' => ['all_items', 'featured', 'unfeatured', 'featured_first'],
     'reference' => &$GLOBALS['TL_LANG']['tl_module'],
     'eval' => ['tl_class' => 'w50 clr'],
-    'sql' => "varchar(16) COLLATE ascii_bin NOT NULL default 'all_items'",
+    'sql' => ['type' => 'string', 'length' => 16, 'default' => 'all_items'],
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['podcast_template'] = [
     'inputType' => 'select',
     'options_callback' => static fn () => Controller::getTemplateGroup('podcast_'),
     'eval' => ['includeBlankOption' => true, 'chosen' => true, 'tl_class' => 'w50 clr'],
-    'sql' => "varchar(64) COLLATE ascii_bin NOT NULL default ''",
+    'sql' => ['type' => 'string', 'length' => 64, 'default' => ''],
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['podcast_listClass'] = [
     'inputType' => 'text',
     'eval' => ['maxlength' => 128, 'tl_class' => 'w50'],
-    'sql' => "varchar(255) NOT NULL default ''",
+    'sql' => ['type' => 'string', 'length' => 255, 'default' => ''],
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['podcast_sortBy'] = [
@@ -73,5 +73,5 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['podcast_sortBy'] = [
     'options' => ['number_asc', 'number_desc', 'date_asc', 'date_desc'],
     'reference' => &$GLOBALS['TL_LANG']['tl_module'],
     'eval' => ['tl_class' => 'w50'],
-    'sql' => "varchar(32) COLLATE ascii_bin NOT NULL default 'number_desc'",
+    'sql' => ['type' => 'string', 'length' => 32, 'default' => 'number_desc'],
 ];
