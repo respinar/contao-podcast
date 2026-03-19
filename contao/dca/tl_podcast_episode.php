@@ -107,7 +107,7 @@ $GLOBALS['TL_DCA']['tl_podcast_episode'] = [
             'inputType' => 'text',
             'flag' => DataContainer::SORT_INITIAL_LETTER_ASC,
             'eval' => ['mandatory' => true, 'maxlength' => 255, 'tl_class' => 'w50'],
-            'sql' => "varchar(255) NOT NULL default ''",
+            'sql' => ['type' => 'string', 'length' => 255, 'default' => ''],
         ],
         'featured' => [
             'toggle' => true,
@@ -123,7 +123,7 @@ $GLOBALS['TL_DCA']['tl_podcast_episode'] = [
             'save_callback' => [
                 ['tl_podcast_episode', 'generateAlias'],
             ],
-            'sql' => "varchar(255) BINARY NOT NULL default ''",
+            'sql' => ['type' => 'string', 'length' => 255, 'default' => '', 'fixed' => true],
         ],
         'author' => [
             'default' => BackendUser::getInstance()->id,
@@ -134,7 +134,7 @@ $GLOBALS['TL_DCA']['tl_podcast_episode'] = [
             'inputType' => 'select',
             'foreignKey' => 'tl_user.name',
             'eval' => ['doNotCopy' => true, 'chosen' => true, 'mandatory' => true, 'includeBlankOption' => true, 'tl_class' => 'w50'],
-            'sql' => 'int(10) unsigned NOT NULL default 0',
+            'sql' => ['type' => 'integer', 'unsigned' => true, 'default' => 0],
             'relation' => ['type' => 'hasOne', 'load' => 'lazy'],
         ],
         'date' => [
@@ -144,57 +144,57 @@ $GLOBALS['TL_DCA']['tl_podcast_episode'] = [
             'flag' => DataContainer::SORT_MONTH_DESC,
             'inputType' => 'text',
             'eval' => ['rgxp' => 'date', 'mandatory' => true, 'doNotCopy' => true, 'datepicker' => true, 'tl_class' => 'w50 wizard'],
-            'sql' => 'int(10) unsigned NOT NULL default 0',
+            'sql' => ['type' => 'integer', 'unsigned' => true, 'default' => 0],
         ],
         'episodeNumber' => [
             'sorting' => true,
             'inputType' => 'text',
             'eval' => ['rgxp' => 'number', 'mandatory' => true, 'doNotCopy' => true, 'tl_class' => 'w50'],
-            'sql' => 'int(10) unsigned NULL',
+            'sql' => ['type' => 'integer', 'unsigned' => true, 'notnull' => false],
         ],
         'pageTitle' => [
             'search' => true,
             'inputType' => 'text',
             'eval' => ['maxlength' => 255, 'decodeEntities' => true, 'tl_class' => 'w50'],
-            'sql' => "varchar(255) NOT NULL default ''",
+            'sql' => ['type' => 'string', 'length' => 255, 'default' => ''],
         ],
         'description' => [
             'search' => true,
             'inputType' => 'textarea',
             'eval' => ['style' => 'height:60px', 'decodeEntities' => true, 'tl_class' => 'clr'],
-            'sql' => 'text NULL',
+            'sql' => ['type' => 'text', 'notnull' => false],
         ],
         'duration' => [
             'inputType' => 'text',
             'eval' => ['rgxp' => 'number', 'mandatory' => true, 'doNotCopy' => true, 'tl_class' => 'w50'],
-            'sql' => 'int(5) unsigned NULL',
+            'sql' => ['type' => 'integer', 'unsigned' => true, 'notnull' => false],
         ],
         'subheadline' => [
             'search' => true,
             'inputType' => 'text',
             'eval' => ['maxlength' => 255, 'tl_class' => 'long'],
-            'sql' => "varchar(255) NOT NULL default ''",
+            'sql' => ['type' => 'string', 'length' => 255, 'default' => ''],
         ],
         'teaser' => [
             'search' => true,
             'inputType' => 'textarea',
             'eval' => ['rte' => 'tinyMCE', 'tl_class' => 'clr'],
-            'sql' => 'text NULL',
+            'sql' => ['type' => 'text', 'notnull' => false],
         ],
         'coverSRC' => [
             'inputType' => 'fileTree',
             'eval' => ['fieldType' => 'radio', 'filesOnly' => true, 'extensions' => '%contao.image.valid_extensions%', 'mandatory' => true],
-            'sql' => 'binary(16) NULL',
+            'sql' => ['type' => 'binary', 'length' => 16, 'notnull' => false],
         ],
         'podcastSRC' => [
             'inputType' => 'fileTree',
             'eval' => ['multiple' => false, 'fieldType' => 'radio', 'filesOnly' => true, 'isDownloads' => true, 'extensions' => 'mp3, m4a, ogg', 'mandatory' => true],
-            'sql' => 'binary(16) NULL',
+            'sql' => ['type' => 'binary', 'length' => 16, 'notnull' => false],
         ],
         'cssClass' => [
             'inputType' => 'text',
             'eval' => ['tl_class' => 'w50'],
-            'sql' => "varchar(255) NOT NULL default ''",
+            'sql' => ['type' => 'string', 'length' => 255, 'default' => ''],
         ],
 
         'published' => [
@@ -208,12 +208,12 @@ $GLOBALS['TL_DCA']['tl_podcast_episode'] = [
         'start' => [
             'inputType' => 'text',
             'eval' => ['rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'],
-            'sql' => "varchar(10) NOT NULL default ''",
+            'sql' => ['type' => 'string', 'length' => 10, 'default' => ''],
         ],
         'stop' => [
             'inputType' => 'text',
             'eval' => ['rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'],
-            'sql' => "varchar(10) NOT NULL default ''",
+            'sql' => ['type' => 'string', 'length' => 10, 'default' => ''],
         ],
     ],
 ];
