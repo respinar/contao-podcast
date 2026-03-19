@@ -132,16 +132,12 @@ class PodcastChannelController extends AbstractFrontendModuleController
                 $orderParts[] = 'date ASC';
                 break;
             case 'date_desc':
-                $orderParts[] = 'date DESC';
-                break;
             default:
                 $orderParts[] = 'date DESC';
                 break;
         }
 
-        if (!empty($orderParts)) {
-            $arrOptions['order'] = implode(', ', $orderParts);
-        }
+        $arrOptions['order'] = implode(', ', $orderParts);
 
         // Get the items
         if (isset($limit)) {
