@@ -66,7 +66,7 @@ final readonly class PodcastParser
         return $template->parse();
     }
 
-    public function parseEpisodes(Collection $episodes, ContentModel|ModuleModel $model, PageModel $page,): array
+    public function parseEpisodes(Collection $episodes, ContentModel|ModuleModel $model, PageModel $page): array
     {
         $items = [];
 
@@ -77,7 +77,7 @@ final readonly class PodcastParser
         return $items;
     }
 
-    private function addFigure(FrontendTemplate $template, EpisodeModel $episode, ContentModel|ModuleModel $model,): void
+    private function addFigure(FrontendTemplate $template, EpisodeModel $episode, ContentModel|ModuleModel $model): void
     {
         if (!$episode->coverSRC) {
             return;
