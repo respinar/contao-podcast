@@ -112,7 +112,7 @@ class PodcastFeedController
                     $episodeUrl = '';
                 }
 
-                if ($episodeUrl) {
+                if ('' !== $episodeUrl && '0' !== $episodeUrl) {
                     $itemLink = $xml->createElement('link', $episodeUrl);
                     $itemEl->appendChild($itemLink);
                     $itemGuid = $xml->createElement('guid', $episodeUrl);
