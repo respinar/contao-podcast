@@ -224,15 +224,6 @@ $GLOBALS['TL_DCA']['tl_podcast_episode'] = [
 class tl_podcast_episode extends Backend
 {
     /**
-     * Import the back end user object.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        $this->import(BackendUser::class, 'User');
-    }
-
-    /**
      * Auto-generate the episode alias if it has not been set yet.
      *
      * @return string
