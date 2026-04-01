@@ -79,7 +79,7 @@ class PodcastFeedController
 
         $jumpToPage = PageModel::findById($channel->jumpTo);
         if ($jumpToPage instanceof PageModel) {
-            $linkEl = $xml->createElement('link', $jumpToPage->getAbsoluteUrl());
+            $linkEl = $xml->createElement('link', $this->contentUrlGenerator->generate($jumpToPage, [], UrlGeneratorInterface::ABSOLUTE_URL));
             $channelEl->appendChild($linkEl);
         }
 
