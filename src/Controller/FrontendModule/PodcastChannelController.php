@@ -19,7 +19,7 @@ use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\Input;
 use Contao\ModuleModel;
 use Contao\Pagination;
-use Contao\Template;
+use Contao\CoreBundle\Twig\FragmentTemplate;
 use Respinar\PodcastBundle\Classes\PodcastParser;
 use Respinar\PodcastBundle\Classes\PodcastUtil;
 use Respinar\PodcastBundle\Model\ChannelModel;
@@ -38,7 +38,7 @@ class PodcastChannelController extends AbstractFrontendModuleController
     ) {
     }
 
-    protected function getResponse(Template $template, ModuleModel $model, Request $request): Response
+    protected function getResponse(FragmentTemplate $template, ModuleModel $model, Request $request): Response
     {
         if ($this->podcastUtil->isProtected($model->podcast_channel)) {
             $template->message = $GLOBALS['TL_LANG']['MSC']['accessError'];
