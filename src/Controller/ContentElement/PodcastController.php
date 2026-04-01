@@ -16,7 +16,7 @@ use Contao\ContentModel;
 use Contao\CoreBundle\Controller\ContentElement\AbstractContentElementController;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsContentElement;
 use Contao\CoreBundle\Routing\ScopeMatcher;
-use Contao\Template;
+use Contao\CoreBundle\Twig\FragmentTemplate;
 use Respinar\PodcastBundle\Classes\PodcastParser;
 use Respinar\PodcastBundle\Model\EpisodeModel;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,7 +33,7 @@ class PodcastController extends AbstractContentElementController
     ) {
     }
 
-    protected function getResponse(Template $template, ContentModel $model, Request $request): Response
+    protected function getResponse(FragmentTemplate $template, ContentModel $model, Request $request): Response
     {
         if ($this->scopeMatcher->isBackendRequest($request)) {
             return $template->getResponse();
