@@ -38,6 +38,14 @@ final readonly class PodcastParser
     ) {
     }
 
+    /*
+     * Parse an episode and return the HTML output as a string.
+     *
+     * @param EpisodeModel $episode The episode to parse.
+     * @param ContentModel|ModuleModel $model The model to use for the template.
+     * @param PageModel $page The page to use for the template.
+     * @return string The HTML output as a string.
+     */
     public function parseEpisode(EpisodeModel $episode, ContentModel|ModuleModel $model, PageModel $page): string
     {
         $template = new FrontendTemplate($model->podcast_template);
