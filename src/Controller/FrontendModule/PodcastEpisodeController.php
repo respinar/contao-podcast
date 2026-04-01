@@ -16,6 +16,7 @@ use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController
 use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\CoreBundle\Routing\ResponseContext\HtmlHeadBag\HtmlHeadBag;
+use Contao\CoreBundle\Routing\ContentUrlGenerator;
 use Contao\CoreBundle\Routing\ResponseContext\ResponseContextAccessor;
 use Contao\CoreBundle\String\HtmlDecoder;
 use Contao\Environment;
@@ -23,7 +24,7 @@ use Contao\Input;
 use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\StringUtil;
-use Contao\Template;
+use Contao\CoreBundle\Twig\FragmentTemplate;
 use Respinar\PodcastBundle\Classes\PodcastParser;
 use Respinar\PodcastBundle\Model\ChannelModel;
 use Respinar\PodcastBundle\Model\EpisodeModel;
@@ -39,10 +40,11 @@ class PodcastEpisodeController extends AbstractFrontendModuleController
         private readonly PodcastParser $podcastParser,
         private readonly ResponseContextAccessor $responseContextAccessor,
         private readonly HtmlDecoder $htmlDecoder,
+        private readonly ContentUrlGenerator $contentUrlGenerator,
     ) {
     }
 
-    protected function getResponse(Template $template, ModuleModel $model, Request $request): Response
+    protected function getResponse(FragmentTemplate $template, ModuleModel $model, Request $request): Response
     {
         $page = $this->getPageModel();
 
@@ -60,14 +62,14 @@ class PodcastEpisodeController extends AbstractFrontendModuleController
         if ($channel instanceof ChannelModel) {
             $overviewPage = PageModel::findById($channel->overviewPage);
             if ($overviewPage instanceof PageModel) {
-                $template->referer = $overviewPage->getFrontendUrl();
+                $template->referer = $this->contentUrlGenerator->generate($overviewPage);
             }
         }
 
         if ($model->overviewPage) {
             $overviewPage = PageModel::findById($model->overviewPage);
             if ($overviewPage instanceof PageModel) {
-                $template->referer = $overviewPage->getFrontendUrl();
+                $template->referer = $this->contentUrlGenerator->generate($overviewPage);
             }
         }
 
